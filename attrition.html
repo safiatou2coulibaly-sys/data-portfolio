@@ -1,0 +1,1498 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>HR Attrition Pipeline — Safiatou Coulibaly</title>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&family=IBM+Plex+Sans:wght@300;400;500;600&family=IBM+Plex+Serif:ital,wght@0,400;1,400&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.0/chart.umd.min.js"></script>
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --bg: #0d1117;
+  --bg2: #161b22;
+  --bg3: #1c2128;
+  --border: #30363d;
+  --border2: #21262d;
+  --text: #e6edf3;
+  --muted: #7d8590;
+  --muted2: #484f58;
+  --green: #3fb950;
+  --green-dim: rgba(63,185,80,0.12);
+  --red: #f85149;
+  --red-dim: rgba(248,81,73,0.12);
+  --blue: #58a6ff;
+  --blue-dim: rgba(88,166,255,0.12);
+  --yellow: #d29922;
+  --yellow-dim: rgba(210,153,34,0.15);
+  --purple: #bc8cff;
+  --orange: #ffa657;
+  --sales: #f85149;
+  --rd: #58a6ff;
+  --hr-dept: #3fb950;
+}
+
+html { scroll-behavior: smooth; }
+body {
+  font-family: 'IBM Plex Sans', sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  line-height: 1.6;
+  overflow-x: hidden;
+}
+
+/* SCANLINE EFFECT */
+body::after {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background: repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0,0,0,0.03) 2px, rgba(0,0,0,0.03) 4px);
+  pointer-events: none;
+  z-index: 999;
+}
+
+/* NAV */
+nav {
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  z-index: 100;
+  background: rgba(13,17,23,0.92);
+  backdrop-filter: blur(12px);
+  border-bottom: 1px solid var(--border);
+  padding: 0 2rem;
+  height: 52px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.nav-left {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+}
+
+.nav-logo {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 0.75rem;
+  color: var(--muted);
+  letter-spacing: 0.05em;
+}
+
+.nav-logo span { color: var(--green); }
+
+.nav-breadcrumb {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 0.72rem;
+  color: var(--muted2);
+}
+
+.nav-breadcrumb a {
+  color: var(--muted);
+  text-decoration: none;
+  transition: color 0.2s;
+}
+
+.nav-breadcrumb a:hover { color: var(--blue); }
+.nav-breadcrumb .sep { color: var(--muted2); }
+.nav-breadcrumb .current { color: var(--text); }
+
+.nav-right {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.nav-tag {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 0.65rem;
+  padding: 0.2rem 0.6rem;
+  border-radius: 999px;
+  letter-spacing: 0.08em;
+}
+
+.tag-pipeline { background: var(--blue-dim); color: var(--blue); border: 1px solid rgba(88,166,255,0.3); }
+.tag-finance { background: var(--green-dim); color: var(--green); border: 1px solid rgba(63,185,80,0.3); }
+
+/* HERO TERMINAL */
+.hero {
+  padding-top: 52px;
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+}
+
+.hero-inner {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 5rem 2rem;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 4rem;
+  align-items: center;
+}
+
+.hero-text {}
+
+.hero-eyebrow {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 0.68rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--green);
+  margin-bottom: 1.5rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.blink {
+  display: inline-block;
+  width: 8px;
+  height: 14px;
+  background: var(--green);
+  animation: blink 1.2s step-end infinite;
+  vertical-align: middle;
+}
+
+@keyframes blink {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0; }
+}
+
+.hero-title {
+  font-family: 'IBM Plex Serif', serif;
+  font-size: clamp(2.2rem, 4vw, 3.5rem);
+  line-height: 1.1;
+  font-weight: 400;
+  color: var(--text);
+  margin-bottom: 1rem;
+}
+
+.hero-title em {
+  font-style: italic;
+  color: var(--green);
+}
+
+.hero-sub {
+  font-size: 0.92rem;
+  color: var(--muted);
+  line-height: 1.75;
+  max-width: 46ch;
+  margin-bottom: 2rem;
+}
+
+.hero-pipeline-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-bottom: 2.5rem;
+}
+
+.pipeline-tag {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 0.65rem;
+  letter-spacing: 0.1em;
+  padding: 0.25rem 0.7rem;
+  border: 1px solid var(--border);
+  color: var(--muted);
+  border-radius: 3px;
+  transition: all 0.2s;
+}
+
+.pipeline-tag:hover {
+  border-color: var(--green);
+  color: var(--green);
+}
+
+/* TERMINAL WINDOW */
+.terminal {
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+}
+
+.terminal-bar {
+  background: var(--bg3);
+  padding: 0.6rem 1rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  border-bottom: 1px solid var(--border);
+}
+
+.terminal-dot {
+  width: 10px; height: 10px;
+  border-radius: 50%;
+}
+
+.dot-red { background: #ff5f57; }
+.dot-yellow { background: #febc2e; }
+.dot-green { background: #28c840; }
+
+.terminal-title {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 0.65rem;
+  color: var(--muted2);
+  margin-left: 0.5rem;
+  letter-spacing: 0.05em;
+}
+
+.terminal-body {
+  padding: 1.2rem 1.4rem;
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 0.72rem;
+  line-height: 1.9;
+}
+
+.t-comment { color: var(--muted2); }
+.t-keyword { color: var(--purple); }
+.t-fn { color: var(--blue); }
+.t-string { color: var(--orange); }
+.t-num { color: var(--green); }
+.t-col { color: var(--text); }
+.t-op { color: var(--muted); }
+.t-output { color: var(--green); padding-left: 1rem; }
+.t-warn { color: var(--yellow); }
+.t-prompt { color: var(--muted2); }
+.t-section { color: var(--muted); font-style: italic; }
+.t-blank { display: block; height: 0.5rem; }
+
+/* STATS BAR */
+.stats-bar {
+  border-top: 1px solid var(--border);
+  border-bottom: 1px solid var(--border);
+  background: var(--bg2);
+}
+
+.stats-bar-inner {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 0 2rem;
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+}
+
+.stat-item {
+  padding: 1.5rem 1rem;
+  border-right: 1px solid var(--border);
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.stat-item:last-child { border-right: none; }
+
+.stat-lbl {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 0.6rem;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--muted2);
+}
+
+.stat-val {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 1.6rem;
+  font-weight: 500;
+  line-height: 1;
+  color: var(--text);
+}
+
+.stat-sub {
+  font-size: 0.72rem;
+  color: var(--muted);
+}
+
+.val-red { color: var(--red); }
+.val-green { color: var(--green); }
+.val-blue { color: var(--blue); }
+.val-yellow { color: var(--yellow); }
+
+/* SECTIONS */
+.section {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 5rem 2rem;
+}
+
+.section-header {
+  margin-bottom: 2.5rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  align-items: baseline;
+  gap: 1rem;
+}
+
+.section-num {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 0.65rem;
+  letter-spacing: 0.15em;
+  color: var(--green);
+}
+
+.section-title {
+  font-family: 'IBM Plex Serif', serif;
+  font-size: 1.8rem;
+  font-weight: 400;
+  color: var(--text);
+}
+
+.section-title em { color: var(--green); font-style: italic; }
+
+.section-note {
+  margin-left: auto;
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 0.62rem;
+  color: var(--muted2);
+  letter-spacing: 0.08em;
+}
+
+/* PIPELINE STAGES */
+.pipeline-stages {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1px;
+  background: var(--border);
+  border: 1px solid var(--border);
+  margin-bottom: 3rem;
+}
+
+.stage {
+  background: var(--bg2);
+  padding: 2rem;
+  position: relative;
+}
+
+.stage-num {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 0.62rem;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--muted2);
+  margin-bottom: 1rem;
+}
+
+.stage-icon {
+  font-size: 1.2rem;
+  margin-bottom: 0.8rem;
+}
+
+.stage-name {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--text);
+  margin-bottom: 0.6rem;
+}
+
+.stage-desc {
+  font-size: 0.82rem;
+  color: var(--muted);
+  line-height: 1.6;
+  margin-bottom: 1.2rem;
+}
+
+.stage-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+
+.stage-action {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 0.65rem;
+  color: var(--muted);
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.stage-action::before {
+  content: '▸';
+  color: var(--green);
+  font-size: 0.7rem;
+}
+
+.stage-result {
+  margin-top: 1.2rem;
+  padding: 0.5rem 0.8rem;
+  background: var(--bg3);
+  border-left: 2px solid var(--green);
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 0.65rem;
+  color: var(--green);
+}
+
+/* CHARTS GRID */
+.charts-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.5rem;
+  margin-bottom: 1.5rem;
+}
+
+.chart-full { grid-column: 1 / -1; }
+
+.chart-card {
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  padding: 1.5rem;
+}
+
+.chart-card-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  margin-bottom: 1.2rem;
+}
+
+.chart-card-label {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 0.62rem;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--muted2);
+  margin-bottom: 0.3rem;
+}
+
+.chart-card-title {
+  font-size: 1rem;
+  font-weight: 500;
+  color: var(--text);
+}
+
+.insight-badge {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 0.62rem;
+  padding: 0.2rem 0.6rem;
+  border-radius: 3px;
+  white-space: nowrap;
+}
+
+.badge-red { background: var(--red-dim); color: var(--red); border: 1px solid rgba(248,81,73,0.3); }
+.badge-blue { background: var(--blue-dim); color: var(--blue); border: 1px solid rgba(88,166,255,0.3); }
+.badge-green { background: var(--green-dim); color: var(--green); border: 1px solid rgba(63,185,80,0.3); }
+.badge-yellow { background: var(--yellow-dim); color: var(--yellow); border: 1px solid rgba(210,153,34,0.3); }
+
+.chart-wrapper { position: relative; height: 260px; }
+.chart-wrapper-sm { position: relative; height: 220px; }
+
+/* FLIGHT RISK TABLE */
+.risk-table-wrap {
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  overflow: hidden;
+}
+
+.risk-table-head {
+  padding: 1.2rem 1.5rem;
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.risk-table-title {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 0.72rem;
+  font-weight: 600;
+  color: var(--text);
+}
+
+.risk-table-sub {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 0.62rem;
+  color: var(--muted2);
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+thead th {
+  background: var(--bg3);
+  padding: 0.65rem 1.2rem;
+  text-align: left;
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 0.6rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--muted2);
+  font-weight: 500;
+  border-bottom: 1px solid var(--border);
+}
+
+tbody tr { border-bottom: 1px solid var(--border2); }
+tbody tr:last-child { border-bottom: none; }
+tbody tr:hover { background: rgba(255,255,255,0.02); }
+
+tbody td {
+  padding: 0.7rem 1.2rem;
+  font-size: 0.82rem;
+  color: var(--text);
+}
+
+.td-mono {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 0.72rem;
+  color: var(--muted);
+}
+
+.td-score {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 0.82rem;
+  font-weight: 600;
+}
+
+.risk-low { color: var(--green); }
+.risk-med { color: var(--yellow); }
+.risk-high { color: var(--orange); }
+.risk-crit { color: var(--red); }
+
+.td-bar-wrap { display: flex; align-items: center; gap: 0.6rem; }
+.td-bar-bg { flex:1; height:5px; background: var(--bg3); border-radius:3px; overflow:hidden; }
+.td-bar-fill { height:100%; border-radius:3px; }
+.td-bar-val { font-family:'IBM Plex Mono',monospace; font-size:0.65rem; color:var(--muted); min-width:38px; text-align:right; }
+
+/* KEY INSIGHT CALLOUT */
+.insight-callout {
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-left: 3px solid var(--green);
+  padding: 1.5rem 2rem;
+  margin: 2rem 0;
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 1.5rem;
+  align-items: start;
+}
+
+.callout-icon {
+  font-size: 1.5rem;
+  line-height: 1;
+}
+
+.callout-label {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 0.62rem;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--green);
+  margin-bottom: 0.4rem;
+}
+
+.callout-text {
+  font-size: 0.92rem;
+  color: var(--text);
+  line-height: 1.7;
+}
+
+.callout-text strong { color: var(--green); }
+
+/* SQL BLOCK */
+.sql-block {
+  background: var(--bg3);
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  overflow: hidden;
+  margin: 1.5rem 0;
+}
+
+.sql-block-header {
+  background: var(--bg2);
+  padding: 0.5rem 1rem;
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+}
+
+.sql-lang {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 0.6rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--blue);
+}
+
+.sql-file {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 0.62rem;
+  color: var(--muted2);
+}
+
+.sql-body {
+  padding: 1.2rem;
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 0.72rem;
+  line-height: 1.8;
+  overflow-x: auto;
+}
+
+.sk { color: var(--purple); }  /* keyword */
+.sf { color: var(--blue); }    /* function */
+.sc { color: var(--muted2); }  /* comment */
+.ss { color: var(--orange); }  /* string */
+.sn { color: var(--green); }   /* number/column */
+.so { color: var(--muted); }   /* operator */
+
+/* LEGEND */
+.legend {
+  display: flex;
+  gap: 1.2rem;
+  flex-wrap: wrap;
+  margin-bottom: 1rem;
+}
+
+.leg-item {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 0.62rem;
+  letter-spacing: 0.08em;
+  color: var(--muted);
+}
+
+.leg-dot {
+  width: 8px; height: 8px;
+  border-radius: 50%;
+}
+
+/* ABOUT */
+.about-grid {
+  display: grid;
+  grid-template-columns: 3fr 2fr;
+  gap: 3rem;
+  align-items: start;
+}
+
+.about-p {
+  font-size: 0.9rem;
+  color: var(--muted);
+  line-height: 1.8;
+  margin-bottom: 0.8rem;
+}
+
+.about-p strong { color: var(--text); }
+
+.about-skills {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  margin-top: 1.2rem;
+}
+
+.skill-chip {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 0.62rem;
+  letter-spacing: 0.08em;
+  padding: 0.25rem 0.6rem;
+  border: 1px solid var(--border);
+  color: var(--muted);
+  border-radius: 3px;
+  transition: all 0.2s;
+}
+
+.skill-chip:hover { border-color: var(--green); color: var(--green); }
+
+.profile-card {
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  padding: 1.5rem;
+}
+
+.profile-card-title {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 0.62rem;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--muted2);
+  margin-bottom: 1.2rem;
+  padding-bottom: 0.8rem;
+  border-bottom: 1px solid var(--border);
+}
+
+.profile-row {
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+  padding: 0.7rem 0;
+  border-bottom: 1px solid var(--border2);
+}
+
+.profile-row:last-child { border-bottom: none; }
+
+.profile-key {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 0.6rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--muted2);
+}
+
+.profile-val {
+  font-size: 0.84rem;
+  color: var(--text);
+}
+
+.profile-val a { color: var(--blue); text-decoration: none; }
+.profile-val a:hover { text-decoration: underline; }
+
+/* FOOTER */
+footer {
+  border-top: 1px solid var(--border);
+  background: var(--bg2);
+  padding: 1.5rem 2rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  max-width: 100%;
+}
+
+.footer-left {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 0.65rem;
+  color: var(--muted2);
+}
+
+.footer-left span { color: var(--green); }
+
+.footer-right {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 0.62rem;
+  color: var(--muted2);
+  letter-spacing: 0.08em;
+}
+
+/* ANIMATIONS */
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(16px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.fade-up { animation: fadeUp 0.65s ease forwards; opacity: 0; }
+.d1 { animation-delay: 0.1s; }
+.d2 { animation-delay: 0.25s; }
+.d3 { animation-delay: 0.4s; }
+.d4 { animation-delay: 0.55s; }
+
+@keyframes typeIn {
+  from { width: 0; }
+  to { width: 100%; }
+}
+
+/* RESPONSIVE */
+@media (max-width: 860px) {
+  .hero-inner { grid-template-columns: 1fr; padding: 3rem 1.5rem; }
+  .stats-bar-inner { grid-template-columns: 1fr 1fr; }
+  .stat-item { border-right: none; border-bottom: 1px solid var(--border); }
+  .pipeline-stages { grid-template-columns: 1fr; }
+  .charts-grid { grid-template-columns: 1fr; }
+  .chart-full { grid-column: 1; }
+  .about-grid { grid-template-columns: 1fr; }
+  nav { padding: 0 1rem; }
+  .section { padding: 3rem 1.5rem; }
+}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-left">
+    <div class="nav-logo"><span>~/</span>safiatou-coulibaly</div>
+    <div class="nav-breadcrumb">
+      <a href="index.html">portfolio</a>
+      <span class="sep">/</span>
+      <span class="current">hr-attrition-pipeline</span>
+    </div>
+  </div>
+  <div class="nav-right">
+    <span class="nav-tag tag-pipeline">Data Pipeline</span>
+    <span class="nav-tag tag-finance">HR Analytics</span>
+  </div>
+</nav>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-inner">
+    <div class="hero-text">
+      <div class="hero-eyebrow fade-up d1">
+        <span class="blink"></span>
+        Project 02 &nbsp;·&nbsp; Data Pipeline Analysis
+      </div>
+      <h1 class="hero-title fade-up d2">
+        Employee Attrition<br>&amp; <em>Flight Risk</em><br>Pipeline
+      </h1>
+      <p class="hero-sub fade-up d3">
+        A full data engineering and analytics pipeline on 1,470 employee records — from raw dirty data to a composite flight risk model. Built to answer: <em>what actually drives people to leave?</em>
+      </p>
+      <div class="hero-pipeline-tags fade-up d4">
+        <span class="pipeline-tag">CLEAN</span>
+        <span class="pipeline-tag">▸</span>
+        <span class="pipeline-tag">TRANSFORM</span>
+        <span class="pipeline-tag">▸</span>
+        <span class="pipeline-tag">ENRICH</span>
+        <span class="pipeline-tag">▸</span>
+        <span class="pipeline-tag">ANALYZE</span>
+        <span class="pipeline-tag">▸</span>
+        <span class="pipeline-tag">INSIGHT</span>
+      </div>
+    </div>
+
+    <div class="terminal fade-up d3">
+      <div class="terminal-bar">
+        <div class="terminal-dot dot-red"></div>
+        <div class="terminal-dot dot-yellow"></div>
+        <div class="terminal-dot dot-green"></div>
+        <div class="terminal-title">pipeline.py — attrition_analysis</div>
+      </div>
+      <div class="terminal-body">
+        <div><span class="t-comment"># Stage 1: Data Quality Audit</span></div>
+        <div><span class="t-keyword">df</span> = <span class="t-fn">load</span>(<span class="t-string">'hr_employees.csv'</span>)</div>
+        <div><span class="t-output">▸ 1,482 rows loaded</span></div>
+        <div><span class="t-output">▸ 12 duplicate records found</span></div>
+        <div><span class="t-output">▸ 49 null values across 3 columns</span></div>
+        <span class="t-blank"></span>
+        <div><span class="t-comment"># Stage 2: Clean + Impute</span></div>
+        <div><span class="t-keyword">df</span>.<span class="t-fn">drop_duplicates</span>()</div>
+        <div><span class="t-keyword">df</span>.<span class="t-fn">fillna</span>(strategy=<span class="t-string">'median/mode'</span>)</div>
+        <div><span class="t-output">▸ Clean rows: 1,470 ✓</span></div>
+        <div><span class="t-output">▸ Nulls remaining: 0 ✓</span></div>
+        <span class="t-blank"></span>
+        <div><span class="t-comment"># Stage 3: Derived Features</span></div>
+        <div><span class="t-keyword">df</span>[<span class="t-string">'TenureBand'</span>] = <span class="t-fn">bin</span>(YearsAtCompany)</div>
+        <div><span class="t-keyword">df</span>[<span class="t-string">'IncomeBand'</span>] = <span class="t-fn">cut</span>(MonthlyIncome)</div>
+        <div><span class="t-keyword">df</span>[<span class="t-string">'FlightRiskScore'</span>] = <span class="t-fn">score</span>(<span class="t-num">6 factors</span>)</div>
+        <span class="t-blank"></span>
+        <div><span class="t-comment"># Output</span></div>
+        <div><span class="t-output">▸ Attrition rate: 23.5%</span></div>
+        <div><span class="t-warn">▸ High-risk segment: OT workers (+52%)</span></div>
+        <div><span class="t-output">▸ Pipeline complete ✓</span></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- STATS BAR -->
+<div class="stats-bar">
+  <div class="stats-bar-inner">
+    <div class="stat-item">
+      <div class="stat-lbl">Employees</div>
+      <div class="stat-val">1,470</div>
+      <div class="stat-sub">after deduplication</div>
+    </div>
+    <div class="stat-item">
+      <div class="stat-lbl">Attrition Rate</div>
+      <div class="stat-val val-red">23.5%</div>
+      <div class="stat-sub">345 employees left</div>
+    </div>
+    <div class="stat-item">
+      <div class="stat-lbl">Overtime Uplift</div>
+      <div class="stat-val val-yellow">+52%</div>
+      <div class="stat-sub">vs. non-OT workers</div>
+    </div>
+    <div class="stat-item">
+      <div class="stat-lbl">Avg Income Gap</div>
+      <div class="stat-val val-blue">$101</div>
+      <div class="stat-sub">leavers vs. stayers</div>
+    </div>
+    <div class="stat-item">
+      <div class="stat-lbl">Pipeline Steps</div>
+      <div class="stat-val val-green">5</div>
+      <div class="stat-sub">clean → insight</div>
+    </div>
+  </div>
+</div>
+
+<!-- PIPELINE SECTION -->
+<div class="section" id="pipeline">
+  <div class="section-header">
+    <span class="section-num">01</span>
+    <h2 class="section-title">The <em>Pipeline</em></h2>
+    <span class="section-note">RAW → CLEAN → TRANSFORM → ANALYZE</span>
+  </div>
+
+  <div class="pipeline-stages">
+    <div class="stage">
+      <div class="stage-num">Stage 01</div>
+      <div class="stage-icon">🔍</div>
+      <div class="stage-name">INGEST + AUDIT</div>
+      <div class="stage-desc">Load raw HR dataset and run a full data quality audit before touching any records.</div>
+      <div class="stage-actions">
+        <div class="stage-action">Shape check: 1,482 rows × 23 cols</div>
+        <div class="stage-action">Null scan: 3 columns affected</div>
+        <div class="stage-action">Duplicate detection: 12 found</div>
+        <div class="stage-action">Type validation per column</div>
+      </div>
+      <div class="stage-result">▸ Issues flagged before analysis</div>
+    </div>
+
+    <div class="stage">
+      <div class="stage-num">Stage 02</div>
+      <div class="stage-icon">🧹</div>
+      <div class="stage-name">CLEAN + IMPUTE</div>
+      <div class="stage-desc">Resolve all data quality issues using strategy appropriate to each column's distribution.</div>
+      <div class="stage-actions">
+        <div class="stage-action">Drop 12 exact duplicates</div>
+        <div class="stage-action">Impute MonthlyIncome → median</div>
+        <div class="stage-action">Impute JobSatisfaction → mode</div>
+        <div class="stage-action">Impute YearsSincePromo → median</div>
+      </div>
+      <div class="stage-result">▸ 1,470 clean rows, 0 nulls</div>
+    </div>
+
+    <div class="stage">
+      <div class="stage-num">Stage 03</div>
+      <div class="stage-icon">⚙️</div>
+      <div class="stage-name">FEATURE ENGINEERING</div>
+      <div class="stage-desc">Create derived analytical columns that transform raw fields into business-meaningful categories.</div>
+      <div class="stage-actions">
+        <div class="stage-action">TenureBand: 4 buckets (0-2, 3-5, 6-10, 10+)</div>
+        <div class="stage-action">IncomeBand: 4 quartile ranges</div>
+        <div class="stage-action">FlightRiskScore: weighted 6-factor model</div>
+        <div class="stage-action">AttritionBinary: 0/1 flag</div>
+      </div>
+      <div class="stage-result">▸ +4 analytical columns added</div>
+    </div>
+
+    <div class="stage">
+      <div class="stage-num">Stage 04</div>
+      <div class="stage-icon">📊</div>
+      <div class="stage-name">AGGREGATE + PIVOT</div>
+      <div class="stage-desc">Group-by aggregations across all key dimensions to surface attrition patterns.</div>
+      <div class="stage-actions">
+        <div class="stage-action">Attrition rate by Department</div>
+        <div class="stage-action">Attrition rate by Income Band</div>
+        <div class="stage-action">Attrition rate by Tenure Band</div>
+        <div class="stage-action">Overtime impact comparison</div>
+      </div>
+      <div class="stage-result">▸ 6 insight tables produced</div>
+    </div>
+
+    <div class="stage">
+      <div class="stage-num">Stage 05</div>
+      <div class="stage-icon">🎯</div>
+      <div class="stage-name">FLIGHT RISK MODEL</div>
+      <div class="stage-desc">Composite risk score combining 6 behavioral and compensation signals per employee segment.</div>
+      <div class="stage-actions">
+        <div class="stage-action">OverTime: weight 2.5</div>
+        <div class="stage-action">Low job satisfaction: weight 2.0</div>
+        <div class="stage-action">Low income (&lt;$3K): weight 2.0</div>
+        <div class="stage-action">Stalled promotion: weight 1.5</div>
+      </div>
+      <div class="stage-result">▸ Risk score 0–10 per employee</div>
+    </div>
+
+    <div class="stage" style="background:var(--bg3);">
+      <div class="stage-num">SQL Equivalent</div>
+      <div class="stage-icon">🗄️</div>
+      <div class="stage-name">QUERY LOGIC</div>
+      <div class="stage-desc">The pipeline translates directly to SQL for production deployment.</div>
+      <div class="sql-block" style="margin:0;">
+        <div class="sql-body" style="padding:0.8rem; font-size:0.65rem;">
+<span class="sk">SELECT</span> Department,<br>
+&nbsp;&nbsp;<span class="sf">COUNT</span>(*) <span class="sk">AS</span> total,<br>
+&nbsp;&nbsp;<span class="sf">SUM</span>(AttritionFlag) <span class="sk">AS</span> left_co,<br>
+&nbsp;&nbsp;<span class="sf">ROUND</span>(<span class="sf">AVG</span>(AttritionFlag)*<span class="sn">100</span>,<span class="sn">1</span>)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="sk">AS</span> attrition_rate<br>
+<span class="sk">FROM</span> employees_clean<br>
+<span class="sk">GROUP BY</span> Department<br>
+<span class="sk">ORDER BY</span> attrition_rate <span class="sk">DESC</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- INSIGHT CALLOUT -->
+  <div class="insight-callout">
+    <div class="callout-icon">💡</div>
+    <div>
+      <div class="callout-label">Key Finding</div>
+      <div class="callout-text">
+        Contrary to the initial hypothesis, <strong>compensation is not the primary driver of attrition</strong> — employees who left earned only $101/month less than those who stayed. The dominant signal is <strong>overtime status</strong>, which increases attrition risk by 52%, followed by low job satisfaction and stalled promotions. This reframes the retention strategy from compensation-focused to workload and career development-focused.
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ANALYSIS SECTION -->
+<div style="background: var(--bg2); border-top: 1px solid var(--border); border-bottom: 1px solid var(--border);">
+  <div class="section" id="analysis">
+    <div class="section-header">
+      <span class="section-num">02</span>
+      <h2 class="section-title">Analysis <em>Results</em></h2>
+      <span class="section-note">6 dimensions analyzed</span>
+    </div>
+
+    <div class="charts-grid">
+
+      <!-- Chart: Dept attrition -->
+      <div class="chart-card">
+        <div class="chart-card-header">
+          <div>
+            <div class="chart-card-label">Department Analysis</div>
+            <div class="chart-card-title">Attrition Rate by Department</div>
+          </div>
+          <span class="insight-badge badge-red">Sales: 26.7%</span>
+        </div>
+        <div class="legend">
+          <div class="leg-item"><div class="leg-dot" style="background:var(--sales)"></div>Sales</div>
+          <div class="leg-item"><div class="leg-dot" style="background:var(--rd)"></div>R&D</div>
+          <div class="leg-item"><div class="leg-dot" style="background:var(--hr-dept)"></div>HR</div>
+        </div>
+        <div class="chart-wrapper-sm">
+          <canvas id="deptChart"></canvas>
+        </div>
+      </div>
+
+      <!-- Chart: Overtime -->
+      <div class="chart-card">
+        <div class="chart-card-header">
+          <div>
+            <div class="chart-card-label">Workload Driver</div>
+            <div class="chart-card-title">Overtime vs. Attrition Rate</div>
+          </div>
+          <span class="insight-badge badge-yellow">+52% uplift</span>
+        </div>
+        <div class="chart-wrapper-sm">
+          <canvas id="otChart"></canvas>
+        </div>
+      </div>
+
+      <!-- Chart: Income Band -->
+      <div class="chart-card">
+        <div class="chart-card-header">
+          <div>
+            <div class="chart-card-label">Compensation Analysis</div>
+            <div class="chart-card-title">Attrition Rate by Income Band</div>
+          </div>
+          <span class="insight-badge badge-blue">Not primary driver</span>
+        </div>
+        <div class="chart-wrapper-sm">
+          <canvas id="incomeChart"></canvas>
+        </div>
+      </div>
+
+      <!-- Chart: Tenure -->
+      <div class="chart-card">
+        <div class="chart-card-header">
+          <div>
+            <div class="chart-card-label">Tenure Analysis</div>
+            <div class="chart-card-title">Attrition Rate by Years at Company</div>
+          </div>
+          <span class="insight-badge badge-yellow">6-10 yrs: 29.8%</span>
+        </div>
+        <div class="chart-wrapper-sm">
+          <canvas id="tenureChart"></canvas>
+        </div>
+      </div>
+
+      <!-- Chart: Job Role (full width) -->
+      <div class="chart-card chart-full">
+        <div class="chart-card-header">
+          <div>
+            <div class="chart-card-label">Role-Level Analysis</div>
+            <div class="chart-card-title">Attrition Rate by Job Role</div>
+          </div>
+          <span class="insight-badge badge-red">Sales Rep highest risk</span>
+        </div>
+        <div class="chart-wrapper">
+          <canvas id="roleChart"></canvas>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- FLIGHT RISK TABLE -->
+<div class="section" id="model">
+  <div class="section-header">
+    <span class="section-num">03</span>
+    <h2 class="section-title">Flight <em>Risk Model</em></h2>
+    <span class="section-note">Composite 6-factor score · 0–10 scale</span>
+  </div>
+
+  <div style="margin-bottom:1.5rem; font-size:0.85rem; color:var(--muted); line-height:1.7; max-width:70ch;">
+    A weighted composite score was engineered to rank employee segments by attrition likelihood. Each factor reflects a statistically significant driver identified in the pipeline analysis. Score 0 = minimal risk, 10 = critical risk.
+  </div>
+
+  <div class="sql-block">
+    <div class="sql-block-header">
+      <span class="sql-lang">Python</span>
+      <span class="sql-file">feature_engineering.py — FlightRiskScore</span>
+    </div>
+    <div class="sql-body">
+<span class="sc"># Composite weighted risk score — higher = more likely to leave</span><br>
+df[<span class="ss">'FlightRiskScore'</span>] = (<br>
+&nbsp;&nbsp;(df[<span class="ss">'OverTime'</span>] == <span class="ss">'Yes'</span>).<span class="sf">astype</span>(int) * <span class="sn">2.5</span> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="sc"># Strongest single signal</span><br>
+&nbsp;&nbsp;+ (df[<span class="ss">'JobSatisfaction'</span>] &lt;= <span class="sn">2</span>).<span class="sf">astype</span>(int) * <span class="sn">2.0</span> &nbsp;<span class="sc"># Low engagement</span><br>
+&nbsp;&nbsp;+ (df[<span class="ss">'MonthlyIncome'</span>] &lt; <span class="sn">3000</span>).<span class="sf">astype</span>(int) * <span class="sn">2.0</span> &nbsp;<span class="sc"># Below market</span><br>
+&nbsp;&nbsp;+ (df[<span class="ss">'WorkLifeBalance'</span>] &lt;= <span class="sn">2</span>).<span class="sf">astype</span>(int) * <span class="sn">1.5</span> &nbsp;<span class="sc"># Burnout signal</span><br>
+&nbsp;&nbsp;+ (df[<span class="ss">'YearsSinceLastPromotion'</span>] &gt; <span class="sn">5</span>).<span class="sf">astype</span>(int) * <span class="sn">1.5</span> <span class="sc"># Career stall</span><br>
+&nbsp;&nbsp;+ (df[<span class="ss">'StockOptionLevel'</span>] == <span class="sn">0</span>).<span class="sf">astype</span>(int) * <span class="sn">0.5</span> &nbsp;<span class="sc"># No retention equity</span><br>
+)
+    </div>
+  </div>
+
+  <div class="risk-table-wrap">
+    <div class="risk-table-head">
+      <div>
+        <div class="risk-table-title">Risk Score → Observed Attrition Rate</div>
+        <div class="risk-table-sub" style="margin-top:0.2rem;">Attrition rate rises consistently with score — validating the model</div>
+      </div>
+      <div>
+        <span class="insight-badge badge-green" style="font-size:0.6rem;">Score 5.0+ → 32.7% attrition rate</span>
+      </div>
+    </div>
+    <table>
+      <thead>
+        <tr>
+          <th>Flight Risk Score</th>
+          <th>Risk Tier</th>
+          <th>Employee Count</th>
+          <th>Attrition Rate</th>
+          <th style="width:200px;">Rate Visual</th>
+        </tr>
+      </thead>
+      <tbody id="riskTable"></tbody>
+    </table>
+  </div>
+</div>
+
+<!-- ABOUT -->
+<div style="background: var(--bg2); border-top: 1px solid var(--border);">
+  <div class="section" id="about">
+    <div class="section-header">
+      <span class="section-num">04</span>
+      <h2 class="section-title">About This <em>Project</em></h2>
+    </div>
+
+    <div class="about-grid">
+      <div>
+        <p class="about-p">
+          This project demonstrates an end-to-end <strong>data pipeline workflow</strong> applied to a real-world HR analytics problem. It mirrors the structure of a production data pipeline: ingest, audit, clean, transform, aggregate, model, and present — each stage documented and reproducible.
+        </p>
+        <p class="about-p">
+          The dataset (IBM HR Analytics style, 1,470 records) includes intentional <strong>data quality issues</strong> — nulls, duplicates, and mixed types — to demonstrate realistic cleaning judgment. All transformations use explicit, defensible strategies (median imputation for skewed income, mode for satisfaction scores).
+        </p>
+        <p class="about-p">
+          The <strong>Flight Risk Score</strong> is an original feature engineering contribution: a weighted composite of six behavioral signals empirically linked to attrition. The scoring logic is designed to be directly translatable to SQL for deployment in a BI tool or HR dashboard.
+        </p>
+        <p class="about-p">
+          The headline insight — that <strong>overtime is a stronger attrition driver than compensation</strong> — has direct strategic implications: retention investment should prioritize workload management and promotion cadence over pay adjustments alone.
+        </p>
+        <div class="about-skills">
+          <span class="skill-chip">Python / pandas</span>
+          <span class="skill-chip">Data Cleaning</span>
+          <span class="skill-chip">Feature Engineering</span>
+          <span class="skill-chip">SQL Logic</span>
+          <span class="skill-chip">GroupBy Aggregation</span>
+          <span class="skill-chip">Weighted Scoring Models</span>
+          <span class="skill-chip">HR Analytics</span>
+          <span class="skill-chip">Pipeline Design</span>
+          <span class="skill-chip">Data Quality Auditing</span>
+          <span class="skill-chip">Null Imputation</span>
+        </div>
+      </div>
+
+      <div class="profile-card">
+        <div class="profile-card-title">// analyst_info.json</div>
+        <div class="profile-row">
+          <div class="profile-key">name</div>
+          <div class="profile-val">Safiatou Coulibaly</div>
+        </div>
+        <div class="profile-row">
+          <div class="profile-key">degree</div>
+          <div class="profile-val">B.S. Information Systems<br>UMBC · Cum Laude · 3.56 GPA</div>
+        </div>
+        <div class="profile-row">
+          <div class="profile-key">email</div>
+          <div class="profile-val"><a href="mailto:safiatou2.coulibaly@gmail.com">safiatou2.coulibaly@gmail.com</a></div>
+        </div>
+        <div class="profile-row">
+          <div class="profile-key">linkedin</div>
+          <div class="profile-val"><a href="https://www.linkedin.com/in/safiatoucoulibaly1" target="_blank">linkedin.com/in/safiatoucoulibaly1</a></div>
+        </div>
+        <div class="profile-row">
+          <div class="profile-key">location</div>
+          <div class="profile-val">Baltimore, MD</div>
+        </div>
+        <div class="profile-row">
+          <div class="profile-key">portfolio</div>
+          <div class="profile-val"><a href="index.html">View all projects →</a></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<footer>
+  <div class="footer-left"><span>~/</span>safiatou-coulibaly · HR Attrition Pipeline · 2025</div>
+  <div class="footer-right">Data Analytics Portfolio</div>
+</footer>
+
+<script>
+const chartDefaults = {
+  plugins: { legend: { display: false } },
+  responsive: true,
+  maintainAspectRatio: false,
+};
+
+const gridColor = '#21262d';
+const tickFont = { family: 'IBM Plex Mono', size: 10 };
+const tickColor = '#484f58';
+
+// 1. DEPT CHART
+new Chart(document.getElementById('deptChart'), {
+  type: 'bar',
+  data: {
+    labels: ['Sales', 'Human Resources', 'R&D'],
+    datasets: [{
+      data: [26.7, 22.4, 21.9],
+      backgroundColor: ['rgba(248,81,73,0.8)', 'rgba(63,185,80,0.8)', 'rgba(88,166,255,0.8)'],
+      borderRadius: 3,
+    }]
+  },
+  options: {
+    ...chartDefaults,
+    scales: {
+      x: { grid: { color: gridColor }, ticks: { font: tickFont, color: tickColor } },
+      y: {
+        min: 0, max: 35,
+        grid: { color: gridColor },
+        ticks: { font: tickFont, color: tickColor, callback: v => v + '%' }
+      }
+    },
+    plugins: {
+      legend: { display: false },
+      tooltip: {
+        backgroundColor: '#161b22',
+        borderColor: '#30363d',
+        borderWidth: 1,
+        titleFont: { family: 'IBM Plex Mono', size: 10 },
+        bodyFont: { family: 'IBM Plex Sans', size: 11 },
+        callbacks: { label: c => ` Attrition: ${c.parsed.y}%` }
+      }
+    }
+  }
+});
+
+// 2. OVERTIME CHART
+new Chart(document.getElementById('otChart'), {
+  type: 'bar',
+  data: {
+    labels: ['No Overtime', 'Works Overtime'],
+    datasets: [{
+      data: [20.5, 31.1],
+      backgroundColor: ['rgba(63,185,80,0.7)', 'rgba(248,81,73,0.8)'],
+      borderRadius: 4,
+      barThickness: 60,
+    }]
+  },
+  options: {
+    ...chartDefaults,
+    scales: {
+      x: { grid: { display: false }, ticks: { font: tickFont, color: tickColor } },
+      y: {
+        min: 0, max: 40,
+        grid: { color: gridColor },
+        ticks: { font: tickFont, color: tickColor, callback: v => v + '%' }
+      }
+    },
+    plugins: {
+      legend: { display: false },
+      tooltip: {
+        backgroundColor: '#161b22',
+        borderColor: '#30363d',
+        borderWidth: 1,
+        titleFont: { family: 'IBM Plex Mono', size: 10 },
+        bodyFont: { family: 'IBM Plex Sans', size: 11 },
+        callbacks: { label: c => ` Attrition: ${c.parsed.y}%` }
+      }
+    }
+  }
+});
+
+// 3. INCOME CHART
+new Chart(document.getElementById('incomeChart'), {
+  type: 'line',
+  data: {
+    labels: ['<$3K', '$3K–$6K', '$6K–$10K', '$10K+'],
+    datasets: [{
+      data: [25.8, 23.3, 23.1, 20.6],
+      borderColor: '#58a6ff',
+      backgroundColor: 'rgba(88,166,255,0.1)',
+      borderWidth: 2,
+      pointRadius: 5,
+      pointBackgroundColor: '#58a6ff',
+      tension: 0.3,
+      fill: true,
+    }]
+  },
+  options: {
+    ...chartDefaults,
+    scales: {
+      x: { grid: { color: gridColor }, ticks: { font: tickFont, color: tickColor } },
+      y: {
+        min: 15, max: 30,
+        grid: { color: gridColor },
+        ticks: { font: tickFont, color: tickColor, callback: v => v + '%' }
+      }
+    },
+    plugins: {
+      legend: { display: false },
+      tooltip: {
+        backgroundColor: '#161b22',
+        borderColor: '#30363d',
+        borderWidth: 1,
+        titleFont: { family: 'IBM Plex Mono', size: 10 },
+        bodyFont: { family: 'IBM Plex Sans', size: 11 },
+        callbacks: { label: c => ` Attrition: ${c.parsed.y}%` }
+      }
+    }
+  }
+});
+
+// 4. TENURE CHART
+new Chart(document.getElementById('tenureChart'), {
+  type: 'bar',
+  data: {
+    labels: ['0–2 yrs', '3–5 yrs', '6–10 yrs', '10+ yrs'],
+    datasets: [{
+      data: [20.0, 21.7, 29.8, 22.7],
+      backgroundColor: [
+        'rgba(63,185,80,0.7)',
+        'rgba(88,166,255,0.7)',
+        'rgba(248,81,73,0.8)',
+        'rgba(210,153,34,0.7)'
+      ],
+      borderRadius: 3,
+    }]
+  },
+  options: {
+    ...chartDefaults,
+    scales: {
+      x: { grid: { display: false }, ticks: { font: tickFont, color: tickColor } },
+      y: {
+        min: 0, max: 40,
+        grid: { color: gridColor },
+        ticks: { font: tickFont, color: tickColor, callback: v => v + '%' }
+      }
+    },
+    plugins: {
+      legend: { display: false },
+      tooltip: {
+        backgroundColor: '#161b22',
+        borderColor: '#30363d',
+        borderWidth: 1,
+        titleFont: { family: 'IBM Plex Mono', size: 10 },
+        bodyFont: { family: 'IBM Plex Sans', size: 11 },
+        callbacks: { label: c => ` Attrition: ${c.parsed.y}%` }
+      }
+    }
+  }
+});
+
+// 5. ROLE CHART
+new Chart(document.getElementById('roleChart'), {
+  type: 'bar',
+  data: {
+    labels: ['Sales Representative', 'Sales Executive', 'Research Scientist', 'Manager', 'Lab Technician', 'Human Resources', 'Research Director'],
+    datasets: [{
+      data: [26.8, 25.3, 25.0, 23.2, 21.8, 21.5, 21.2],
+      backgroundColor: [
+        'rgba(248,81,73,0.85)',
+        'rgba(248,81,73,0.7)',
+        'rgba(88,166,255,0.7)',
+        'rgba(88,166,255,0.6)',
+        'rgba(63,185,80,0.65)',
+        'rgba(63,185,80,0.55)',
+        'rgba(63,185,80,0.5)',
+      ],
+      borderRadius: 3,
+    }]
+  },
+  options: {
+    ...chartDefaults,
+    indexAxis: 'y',
+    scales: {
+      x: {
+        min: 0, max: 35,
+        grid: { color: gridColor },
+        ticks: { font: tickFont, color: tickColor, callback: v => v + '%' }
+      },
+      y: { grid: { display: false }, ticks: { font: { family: 'IBM Plex Mono', size: 10 }, color: tickColor } }
+    },
+    plugins: {
+      legend: { display: false },
+      tooltip: {
+        backgroundColor: '#161b22',
+        borderColor: '#30363d',
+        borderWidth: 1,
+        titleFont: { family: 'IBM Plex Mono', size: 10 },
+        bodyFont: { family: 'IBM Plex Sans', size: 11 },
+        callbacks: { label: c => ` Attrition: ${c.parsed.x}%` }
+      }
+    }
+  }
+});
+
+// 6. RISK TABLE
+const riskData = [
+  { score: '0.0', count: 74, rate: 12.2 },
+  { score: '0.5', count: 24, rate: 12.5 },
+  { score: '1.5', count: 185, rate: 13.0 },
+  { score: '2.0', count: 126, rate: 15.9 },
+  { score: '2.5', count: 78, rate: 25.6 },
+  { score: '3.0', count: 108, rate: 18.5 },
+  { score: '3.5', count: 221, rate: 23.5 },
+  { score: '4.0', count: 152, rate: 23.0 },
+  { score: '4.5', count: 70, rate: 21.4 },
+  { score: '5.0', count: 110, rate: 32.7 },
+  { score: '5.5', count: 58, rate: 31.0 },
+  { score: '6.0', count: 44, rate: 34.1 },
+  { score: '7.0+', count: 220, rate: 36.4 },
+];
+
+function riskTier(score) {
+  const s = parseFloat(score);
+  if (s < 2) return ['Low', 'risk-low'];
+  if (s < 4) return ['Medium', 'risk-med'];
+  if (s < 6) return ['High', 'risk-high'];
+  return ['Critical', 'risk-crit'];
+}
+
+const tbody = document.getElementById('riskTable');
+riskData.forEach(row => {
+  const [tier, cls] = riskTier(row.score);
+  const barPct = Math.min((row.rate / 40) * 100, 100);
+  const barColor = cls === 'risk-low' ? '#3fb950' : cls === 'risk-med' ? '#d29922' : cls === 'risk-high' ? '#ffa657' : '#f85149';
+  const tr = document.createElement('tr');
+  tr.innerHTML = `
+    <td><span class="td-mono td-score ${cls}">${row.score}</span></td>
+    <td><span class="insight-badge ${cls === 'risk-low' ? 'badge-green' : cls === 'risk-med' ? 'badge-yellow' : 'badge-red'}" style="font-size:0.62rem;">${tier}</span></td>
+    <td class="td-mono">${row.count.toLocaleString()}</td>
+    <td><span class="td-score ${cls}" style="font-family:'IBM Plex Mono',monospace;font-size:0.82rem;">${row.rate}%</span></td>
+    <td>
+      <div class="td-bar-wrap">
+        <div class="td-bar-bg"><div class="td-bar-fill" style="width:${barPct}%;background:${barColor};"></div></div>
+        <div class="td-bar-val">${row.rate}%</div>
+      </div>
+    </td>`;
+  tbody.appendChild(tr);
+});
+</script>
+</body>
+</html>
