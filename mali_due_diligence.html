@@ -1,0 +1,1420 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mali Gold: Due Diligence Assessment — Safiatou Coulibaly</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400;1,700&family=Source+Serif+4:ital,opsz,wght@0,8..60,300;0,8..60,400;0,8..60,600;1,8..60,300;1,8..60,400&family=JetBrains+Mono:wght@300;400;500&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.0/chart.umd.min.js"></script>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+
+:root {
+  --bg: #0a0a08;
+  --bg2: #111110;
+  --bg3: #1a1a17;
+  --gold: #c9972a;
+  --gold-light: #e8b84b;
+  --gold-dim: rgba(201,151,42,0.12);
+  --gold-dim2: rgba(201,151,42,0.06);
+  --red: #c0392b;
+  --red-dim: rgba(192,57,43,0.15);
+  --text: #e8e4dc;
+  --text2: #b8b4ac;
+  --text3: #787468;
+  --border: rgba(201,151,42,0.18);
+  --border2: rgba(232,228,220,0.08);
+  --rule: rgba(201,151,42,0.3);
+}
+
+html { scroll-behavior: smooth; }
+
+body {
+  font-family: 'Source Serif 4', Georgia, serif;
+  background: var(--bg);
+  color: var(--text);
+  line-height: 1.7;
+  overflow-x: hidden;
+}
+
+/* grain overlay */
+body::before {
+  content:'';
+  position:fixed;
+  inset:0;
+  background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 512 512' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.035'/%3E%3C/svg%3E");
+  pointer-events:none;
+  z-index:1000;
+}
+
+/* ── CLASSIFICATION BANNER ── */
+.class-banner {
+  background: var(--red);
+  text-align: center;
+  padding: 0.4rem;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.65rem;
+  letter-spacing: 0.25em;
+  text-transform: uppercase;
+  color: #fff;
+  position: sticky;
+  top: 0;
+  z-index: 200;
+}
+
+/* ── NAV ── */
+nav {
+  position: sticky;
+  top: 26px;
+  z-index: 100;
+  background: rgba(10,10,8,0.92);
+  backdrop-filter: blur(16px);
+  border-bottom: 1px solid var(--border);
+  padding: 0 3rem;
+  height: 52px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.nav-brand {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.7rem;
+  letter-spacing: 0.12em;
+  color: var(--text3);
+  text-transform: uppercase;
+}
+
+.nav-brand span { color: var(--gold); }
+
+.nav-links {
+  display: flex;
+  gap: 2rem;
+  list-style: none;
+}
+
+.nav-links a {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.65rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--text3);
+  text-decoration: none;
+  transition: color 0.2s;
+}
+.nav-links a:hover { color: var(--gold); }
+
+.risk-pill {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.6rem;
+  letter-spacing: 0.12em;
+  padding: 0.25rem 0.8rem;
+  background: var(--red-dim);
+  border: 1px solid rgba(192,57,43,0.4);
+  color: #e74c3c;
+  text-transform: uppercase;
+  border-radius: 2px;
+}
+
+/* ── HERO ── */
+.hero {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 6rem 3rem 4rem;
+  max-width: 1100px;
+  margin: 0 auto;
+  position: relative;
+}
+
+.hero::before {
+  content: '';
+  position: absolute;
+  right: 0; top: 20%; bottom: 20%;
+  width: 1px;
+  background: linear-gradient(to bottom, transparent, var(--rule), transparent);
+}
+
+.hero-label {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.65rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--gold);
+  margin-bottom: 2rem;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.hero-label::before {
+  content: '';
+  display: block;
+  width: 3rem;
+  height: 1px;
+  background: var(--gold);
+}
+
+.hero-title {
+  font-family: 'Playfair Display', serif;
+  font-size: clamp(3rem, 6vw, 6rem);
+  font-weight: 900;
+  line-height: 0.95;
+  color: var(--text);
+  margin-bottom: 1.5rem;
+  letter-spacing: -0.02em;
+}
+
+.hero-title .gold-word { color: var(--gold-light); }
+.hero-title .italic-word { font-style: italic; font-weight: 400; }
+
+.hero-sub {
+  font-size: 1.05rem;
+  color: var(--text2);
+  max-width: 60ch;
+  line-height: 1.8;
+  margin-bottom: 3rem;
+  font-weight: 300;
+}
+
+.hero-meta {
+  display: flex;
+  gap: 3rem;
+  padding-top: 2rem;
+  border-top: 1px solid var(--border2);
+}
+
+.meta-item {}
+.meta-label {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.6rem;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--text3);
+  margin-bottom: 0.3rem;
+}
+.meta-value {
+  font-size: 0.9rem;
+  color: var(--text2);
+}
+
+.hero-risk-bar {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1px;
+  background: var(--border);
+  border: 1px solid var(--border);
+  margin-top: 3rem;
+}
+
+.risk-cell {
+  background: var(--bg2);
+  padding: 1.5rem;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+.risk-cell:hover { background: var(--bg3); }
+
+.risk-cell-label {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.6rem;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--text3);
+  margin-bottom: 0.5rem;
+}
+
+.risk-cell-name {
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--text);
+  margin-bottom: 0.3rem;
+}
+
+.risk-level {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.7rem;
+  font-weight: 500;
+  letter-spacing: 0.1em;
+}
+
+.level-critical { color: #e74c3c; }
+.level-high { color: #e67e22; }
+.level-elevated { color: var(--gold); }
+
+/* ── CONTENT WRAPPER ── */
+.content {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 0 3rem;
+}
+
+/* ── SECTION STRUCTURE ── */
+.doc-section {
+  padding: 5rem 0;
+  border-top: 1px solid var(--border2);
+}
+
+.section-eyebrow {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 2.5rem;
+}
+
+.section-roman {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.65rem;
+  letter-spacing: 0.18em;
+  color: var(--gold);
+  text-transform: uppercase;
+}
+
+.section-rule {
+  flex: 1;
+  height: 1px;
+  background: linear-gradient(to right, var(--rule), transparent);
+}
+
+.section-title {
+  font-family: 'Playfair Display', serif;
+  font-size: clamp(1.8rem, 3vw, 2.8rem);
+  font-weight: 700;
+  line-height: 1.15;
+  margin-bottom: 1.5rem;
+  color: var(--text);
+}
+
+.section-title em { font-style: italic; color: var(--gold-light); font-weight: 400; }
+
+.body-text {
+  font-size: 1rem;
+  color: var(--text2);
+  line-height: 1.85;
+  max-width: 72ch;
+  margin-bottom: 1.4rem;
+  font-weight: 300;
+}
+
+.body-text strong { color: var(--text); font-weight: 600; }
+.body-text em { font-style: italic; color: var(--gold-light); }
+
+/* ── PULL QUOTE ── */
+.pull-quote {
+  margin: 3rem 0;
+  padding: 2rem 2.5rem;
+  border-left: 3px solid var(--gold);
+  background: var(--gold-dim2);
+}
+
+.pull-quote p {
+  font-family: 'Playfair Display', serif;
+  font-size: 1.3rem;
+  font-style: italic;
+  color: var(--text);
+  line-height: 1.6;
+  margin-bottom: 0.8rem;
+}
+
+.pull-quote cite {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.65rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--text3);
+  font-style: normal;
+}
+
+/* ── TWO COLUMN ── */
+.two-col {
+  display: grid;
+  grid-template-columns: 3fr 2fr;
+  gap: 4rem;
+  align-items: start;
+}
+
+/* ── CHART CARDS ── */
+.chart-card {
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  padding: 1.8rem;
+  margin-bottom: 2rem;
+}
+
+.chart-card-eyebrow {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.6rem;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--text3);
+  margin-bottom: 0.4rem;
+}
+
+.chart-card-title {
+  font-family: 'Playfair Display', serif;
+  font-size: 1.1rem;
+  color: var(--text);
+  margin-bottom: 1.4rem;
+}
+
+.chart-wrap { position: relative; height: 260px; }
+.chart-wrap-sm { position: relative; height: 200px; }
+.chart-note {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.6rem;
+  color: var(--text3);
+  margin-top: 0.8rem;
+  letter-spacing: 0.06em;
+}
+
+/* ── TIMELINE ── */
+.timeline {
+  position: relative;
+  padding-left: 2rem;
+  margin: 2.5rem 0;
+}
+
+.timeline::before {
+  content: '';
+  position: absolute;
+  left: 0; top: 0; bottom: 0;
+  width: 1px;
+  background: linear-gradient(to bottom, var(--gold), transparent);
+}
+
+.timeline-item {
+  position: relative;
+  margin-bottom: 2rem;
+  padding-left: 1.5rem;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.timeline-item::before {
+  content: '';
+  position: absolute;
+  left: -2rem;
+  top: 0.5rem;
+  width: 8px; height: 8px;
+  border-radius: 50%;
+  background: var(--bg);
+  border: 1.5px solid var(--gold);
+  transition: all 0.2s;
+}
+
+.timeline-item:hover::before {
+  background: var(--gold);
+  box-shadow: 0 0 12px var(--gold);
+}
+
+.timeline-date {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.65rem;
+  letter-spacing: 0.12em;
+  color: var(--gold);
+  margin-bottom: 0.25rem;
+  text-transform: uppercase;
+}
+
+.timeline-event {
+  font-size: 0.92rem;
+  color: var(--text2);
+  line-height: 1.6;
+}
+
+.timeline-event strong { color: var(--text); }
+
+.timeline-item.escalation::before { border-color: #e74c3c; }
+.timeline-item.escalation .timeline-date { color: #e74c3c; }
+.timeline-item.resolution::before { border-color: #27ae60; }
+.timeline-item.resolution .timeline-date { color: #27ae60; }
+
+/* ── SANCTIONS TABLE ── */
+.sanctions-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1px;
+  background: var(--border);
+  border: 1px solid var(--border);
+  margin: 2rem 0;
+}
+
+.sanction-row {
+  background: var(--bg2);
+  padding: 1.2rem 1.5rem;
+  display: grid;
+  grid-template-columns: 2fr 1fr 3fr;
+  gap: 1.5rem;
+  align-items: start;
+  transition: background 0.2s;
+  cursor: pointer;
+}
+
+.sanction-row:hover { background: var(--bg3); }
+
+.sanction-row.header-row {
+  background: var(--bg3);
+  cursor: default;
+}
+
+.sanction-col-label {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.58rem;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--text3);
+}
+
+.sanction-name {
+  font-size: 0.88rem;
+  font-weight: 600;
+  color: var(--text);
+  margin-bottom: 0.2rem;
+}
+
+.sanction-type {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.6rem;
+  letter-spacing: 0.1em;
+  padding: 0.15rem 0.5rem;
+  border-radius: 2px;
+  display: inline-block;
+  margin-top: 0.3rem;
+}
+
+.type-individual { background: rgba(192,57,43,0.2); color: #e74c3c; border: 1px solid rgba(192,57,43,0.3); }
+.type-entity { background: rgba(201,151,42,0.15); color: var(--gold); border: 1px solid rgba(201,151,42,0.3); }
+
+.sanction-date {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.72rem;
+  color: var(--text3);
+}
+
+.sanction-desc {
+  font-size: 0.82rem;
+  color: var(--text2);
+  line-height: 1.5;
+}
+
+/* ── SOURCES ── */
+.sources-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1px;
+  background: var(--border);
+  border: 1px solid var(--border);
+  margin-top: 2rem;
+}
+
+.source-card {
+  background: var(--bg2);
+  padding: 1.2rem 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  transition: background 0.2s;
+}
+
+.source-card:hover { background: var(--bg3); }
+
+.source-num {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.58rem;
+  color: var(--gold);
+  letter-spacing: 0.1em;
+}
+
+.source-title {
+  font-size: 0.85rem;
+  color: var(--text);
+  line-height: 1.4;
+  font-weight: 400;
+}
+
+.source-org {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.62rem;
+  color: var(--text3);
+  letter-spacing: 0.06em;
+}
+
+.source-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.62rem;
+  color: var(--gold);
+  text-decoration: none;
+  margin-top: 0.2rem;
+  letter-spacing: 0.06em;
+  transition: color 0.2s;
+}
+
+.source-link:hover { color: var(--gold-light); text-decoration: underline; }
+
+.source-link svg { flex-shrink: 0; }
+
+.no-link {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.6rem;
+  color: var(--text3);
+  font-style: italic;
+}
+
+/* ── RECOMMENDATIONS ── */
+.rec-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1.5rem;
+  margin-top: 2rem;
+}
+
+.rec-card {
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-top: 2px solid var(--gold);
+  padding: 1.8rem;
+}
+
+.rec-num {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 2rem;
+  font-weight: 300;
+  color: var(--gold-dim);
+  line-height: 1;
+  margin-bottom: 1rem;
+}
+
+.rec-title {
+  font-family: 'Playfair Display', serif;
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--text);
+  margin-bottom: 0.6rem;
+}
+
+.rec-body {
+  font-size: 0.85rem;
+  color: var(--text2);
+  line-height: 1.7;
+  font-weight: 300;
+}
+
+/* ── TOOLTIP ── */
+.tooltip-wrap { position: relative; display: inline; }
+
+.tooltip-trigger {
+  border-bottom: 1px dotted var(--gold);
+  cursor: help;
+  color: var(--gold-light);
+}
+
+.tooltip-box {
+  display: none;
+  position: absolute;
+  bottom: calc(100% + 8px);
+  left: 50%;
+  transform: translateX(-50%);
+  background: var(--bg3);
+  border: 1px solid var(--border);
+  padding: 0.7rem 1rem;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.65rem;
+  color: var(--text2);
+  line-height: 1.5;
+  width: 240px;
+  z-index: 50;
+  pointer-events: none;
+  letter-spacing: 0.02em;
+}
+
+.tooltip-wrap:hover .tooltip-box { display: block; }
+
+/* ── STAT CALLOUTS ── */
+.stat-row {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1px;
+  background: var(--border);
+  border: 1px solid var(--border);
+  margin: 2.5rem 0;
+}
+
+.stat-box {
+  background: var(--bg2);
+  padding: 1.5rem;
+}
+
+.stat-box-num {
+  font-family: 'Playfair Display', serif;
+  font-size: 2rem;
+  font-weight: 700;
+  color: var(--gold-light);
+  line-height: 1;
+  margin-bottom: 0.3rem;
+}
+
+.stat-box-label {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.6rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--text3);
+  line-height: 1.4;
+}
+
+/* ── ABOUT STRIP ── */
+.about-strip {
+  background: var(--bg2);
+  border-top: 1px solid var(--border);
+  border-bottom: 1px solid var(--border);
+  padding: 3rem;
+  margin: 4rem 0 0;
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  gap: 4rem;
+  align-items: center;
+}
+
+.about-title {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.6rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--gold);
+  margin-bottom: 0.8rem;
+}
+
+.about-name {
+  font-family: 'Playfair Display', serif;
+  font-size: 1.6rem;
+  font-weight: 700;
+  color: var(--text);
+  margin-bottom: 0.6rem;
+}
+
+.about-desc {
+  font-size: 0.9rem;
+  color: var(--text2);
+  line-height: 1.7;
+  font-weight: 300;
+}
+
+.about-links {
+  display: flex;
+  flex-direction: column;
+  gap: 0.8rem;
+}
+
+.about-link-item {
+  display: flex;
+  flex-direction: column;
+  gap: 0.1rem;
+}
+
+.about-link-label {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.55rem;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--text3);
+}
+
+.about-link-val {
+  font-size: 0.85rem;
+  color: var(--gold);
+  text-decoration: none;
+}
+
+.about-link-val:hover { text-decoration: underline; }
+
+/* ── FOOTER ── */
+footer {
+  padding: 2rem 3rem;
+  border-top: 1px solid var(--border2);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.footer-text {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.62rem;
+  color: var(--text3);
+  letter-spacing: 0.08em;
+}
+
+.footer-text span { color: var(--gold); }
+
+/* ── RISK FILTER BUTTONS ── */
+.filter-bar {
+  display: flex;
+  gap: 0.5rem;
+  margin-bottom: 1.5rem;
+  flex-wrap: wrap;
+}
+
+.filter-btn {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.62rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  padding: 0.35rem 0.9rem;
+  border: 1px solid var(--border);
+  background: transparent;
+  color: var(--text3);
+  cursor: pointer;
+  transition: all 0.2s;
+  border-radius: 2px;
+}
+
+.filter-btn:hover, .filter-btn.active {
+  border-color: var(--gold);
+  color: var(--gold);
+  background: var(--gold-dim2);
+}
+
+/* ── ANIMATIONS ── */
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.fade-up { animation: fadeUp 0.8s ease forwards; opacity: 0; }
+.d1 { animation-delay: 0.1s; }
+.d2 { animation-delay: 0.3s; }
+.d3 { animation-delay: 0.5s; }
+.d4 { animation-delay: 0.7s; }
+.d5 { animation-delay: 0.9s; }
+
+@keyframes pulse-gold {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(201,151,42,0); }
+  50% { box-shadow: 0 0 0 6px rgba(201,151,42,0.1); }
+}
+
+/* ── RESPONSIVE ── */
+@media (max-width: 860px) {
+  nav { padding: 0 1.5rem; }
+  .nav-links { display: none; }
+  .hero { padding: 5rem 1.5rem 3rem; }
+  .content { padding: 0 1.5rem; }
+  .two-col { grid-template-columns: 1fr; }
+  .stat-row { grid-template-columns: 1fr 1fr; }
+  .rec-grid { grid-template-columns: 1fr; }
+  .sources-grid { grid-template-columns: 1fr; }
+  .hero-risk-bar { grid-template-columns: 1fr; }
+  .sanction-row { grid-template-columns: 1fr; gap: 0.5rem; }
+  .about-strip { grid-template-columns: 1fr; }
+  footer { flex-direction: column; gap: 0.5rem; padding: 1.5rem; }
+}
+</style>
+</head>
+<body>
+
+<div class="class-banner">Open-Source Intelligence Assessment &nbsp;·&nbsp; Not Classified &nbsp;·&nbsp; For Research and Educational Use</div>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-brand"><span>///</span> Mali Gold Risk Assessment</div>
+  <ul class="nav-links">
+    <li><a href="#background">Background</a></li>
+    <li><a href="#barrick">Barrick Case</a></li>
+    <li><a href="#sanctions">Sanctions</a></li>
+    <li><a href="#recommendations">Recommendations</a></li>
+    <li><a href="#sources">Sources</a></li>
+  </ul>
+  <div class="risk-pill">Risk: Critical</div>
+</nav>
+
+<!-- HERO -->
+<div style="max-width:1100px;margin:0 auto;">
+  <div class="hero">
+    <div class="hero-label fade-up d1">Due Diligence Assessment · January 2026</div>
+
+    <h1 class="hero-title">
+      <span class="fade-up d2" style="display:block;">Risks in</span>
+      <span class="fade-up d3" style="display:block;"><span class="gold-word">Mali's Gold</span></span>
+      <span class="fade-up d4" style="display:block;"><span class="italic-word">Mining Sector</span></span>
+    </h1>
+
+    <p class="hero-sub fade-up d5">
+      A structured risk assessment of sovereign, sanctions, and reputational exposure for entities with direct or indirect ties to Mali's gold supply chain — drawing on U.S. Treasury designations, ICSID arbitration records, and investigative reporting.
+    </p>
+
+    <div class="hero-risk-bar fade-up d5">
+      <div class="risk-cell" onclick="scrollTo('#background')">
+        <div class="risk-cell-label">Risk Category 01</div>
+        <div class="risk-cell-name">Sovereign & Regulatory</div>
+        <div class="risk-level level-critical">● Critical</div>
+      </div>
+      <div class="risk-cell" onclick="scrollTo('#sanctions')">
+        <div class="risk-cell-label">Risk Category 02</div>
+        <div class="risk-cell-name">Sanctions & Compliance</div>
+        <div class="risk-level level-critical">● Critical</div>
+      </div>
+      <div class="risk-cell" onclick="scrollTo('#barrick')">
+        <div class="risk-cell-label">Risk Category 03</div>
+        <div class="risk-cell-name">Reputational & Operational</div>
+        <div class="risk-level level-high">● High</div>
+      </div>
+    </div>
+
+    <div class="hero-meta fade-up d5">
+      <div class="meta-item">
+        <div class="meta-label">Prepared by</div>
+        <div class="meta-value">Safiatou Coulibaly</div>
+      </div>
+      <div class="meta-item">
+        <div class="meta-label">Date</div>
+        <div class="meta-value">January 2026</div>
+      </div>
+      <div class="meta-item">
+        <div class="meta-label">Sources Cited</div>
+        <div class="meta-value">18 Primary Sources</div>
+      </div>
+      <div class="meta-item">
+        <div class="meta-label">Jurisdiction</div>
+        <div class="meta-value">Republic of Mali</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- EXEC SUMMARY STATS -->
+<div class="content">
+  <div class="stat-row">
+    <div class="stat-box">
+      <div class="stat-box-num">80%</div>
+      <div class="stat-box-label">of Mali's total exports are gold</div>
+    </div>
+    <div class="stat-box">
+      <div class="stat-box-num">$430M</div>
+      <div class="stat-box-label">Barrick settlement with Malian junta (Nov 2025)</div>
+    </div>
+    <div class="stat-box">
+      <div class="stat-box-num">$2.5B</div>
+      <div class="stat-box-label">Russia's African gold earnings since Ukraine invasion</div>
+    </div>
+    <div class="stat-box">
+      <div class="stat-box-num">~2M</div>
+      <div class="stat-box-label">People in Mali dependent on mining for livelihood</div>
+    </div>
+  </div>
+</div>
+
+<!-- SECTION I: BACKGROUND -->
+<div class="content" id="background">
+  <div class="doc-section">
+    <div class="section-eyebrow">
+      <span class="section-roman">Section I</span>
+      <div class="section-rule"></div>
+    </div>
+    <h2 class="section-title">Background: <em>Mali's Gold Sector</em></h2>
+
+    <div class="two-col">
+      <div>
+        <p class="body-text">
+          Gold represents the backbone of Mali's economy — accounting for roughly <strong>80% of total exports</strong> and historically between five and ten percent of GDP. The Ministry of Mines estimates the country holds 881 metric tons of gold deposits, with approximately 300 artisanal mining sites and <strong>over two million people</strong> — more than ten percent of the population — dependent on mining for their livelihood.
+        </p>
+        <p class="body-text">
+          The industry is split between large-scale industrial operations dominated by multinationals — Canada's <strong>Barrick Mining</strong>, Australia's <strong>Resolute Mining</strong>, and Canada's <strong>B2Gold</strong> — and a vast artisanal and small-scale sector operating largely outside formal regulatory oversight. The OECD has identified artisanal gold from the Sahel as especially vulnerable to illicit financing, armed groups, and money laundering.
+        </p>
+
+        <p class="body-text">
+          The political landscape shifted dramatically after military coups in August 2020 and May 2021 installed Colonel <span class="tooltip-wrap"><span class="tooltip-trigger">Assimi Goïta</span><span class="tooltip-box">Interim president of Mali since the 2021 coup. Head of the Comité National pour le Salut du Peuple (CNSP). Faces ECOWAS sanctions.</span></span> as interim president. Cut off from Western development aid, the junta turned to the mining sector as its primary revenue source.
+        </p>
+
+        <p class="body-text">
+          In August 2023, the government enacted a revised <span class="tooltip-wrap"><span class="tooltip-trigger">Mining Code (Law No. 2023-040)</span><span class="tooltip-box">Raised the state's mandatory equity share in new mining projects to 35%. Dramatically increased fiscal obligations for foreign operators. Retroactive application disputed by companies.</span></span>, significantly raising the state's share in mining projects and increasing fiscal obligations on foreign operators. This is part of a wider wave of resource nationalism across the Sahel — Niger, Burkina Faso, Senegal, and Ivory Coast have all enacted similar measures.
+        </p>
+
+        <div class="pull-quote">
+          <p>"Mali represents the strongest example in a larger historical pattern of resource nationalism — a trend that is reshaping how foreign capital accesses African extractive industries."</p>
+          <cite>— Assessment Section II, Safiatou Coulibaly</cite>
+        </div>
+      </div>
+
+      <div>
+        <!-- Chart: Gold's share of exports over time -->
+        <div class="chart-card">
+          <div class="chart-card-eyebrow">Economic Context</div>
+          <div class="chart-card-title">Gold's Share of Mali's Economy</div>
+          <div class="chart-wrap-sm">
+            <canvas id="goldShareChart"></canvas>
+          </div>
+          <div class="chart-note">Estimated figures. Gold export share ~80% since mid-2010s.</div>
+        </div>
+
+        <!-- Chart: Regional resource nationalism -->
+        <div class="chart-card">
+          <div class="chart-card-eyebrow">Regional Pattern</div>
+          <div class="chart-card-title">Sahel Resource Nationalism Events (2020–2025)</div>
+          <div class="chart-wrap-sm">
+            <canvas id="nationalismChart"></canvas>
+          </div>
+          <div class="chart-note">Number of significant sovereign interventions in mining per country.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- SECTION II: BARRICK CASE STUDY -->
+<div class="content" id="barrick">
+  <div class="doc-section">
+    <div class="section-eyebrow">
+      <span class="section-roman">Section II</span>
+      <div class="section-rule"></div>
+    </div>
+    <h2 class="section-title">Case Study: <em>The Barrick–Mali Dispute</em></h2>
+
+    <p class="body-text">
+      The confrontation between <strong>Barrick Mining Corporation</strong> (NYSE: GOLD) and the Government of Mali over the <span class="tooltip-wrap"><span class="tooltip-trigger">Loulo-Gounkoto gold complex</span><span class="tooltip-box">Located in southwestern Mali near the Senegalese border. In production since 2005. ~8,000 workers, ~97% Malian nationals. Barrick owns 80%, Malian state 20%. Total investment: $10B+.</span></span> is one of the most consequential mining disputes in recent African history. Barrick acquired the complex in 2019 via its purchase of Randgold Resources and had invested over ten billion dollars in Mali.
+    </p>
+
+    <div class="stat-row" style="margin:2rem 0;">
+      <div class="stat-box">
+        <div class="stat-box-num">$10B+</div>
+        <div class="stat-box-label">Barrick's total investment in Mali over ~3 decades</div>
+      </div>
+      <div class="stat-box">
+        <div class="stat-box-num">8,000</div>
+        <div class="stat-box-label">Workers at Loulo-Gounkoto, 97% Malian nationals</div>
+      </div>
+      <div class="stat-box">
+        <div class="stat-box-num">4</div>
+        <div class="stat-box-label">Barrick executives detained on-site in Sept 2024</div>
+      </div>
+      <div class="stat-box">
+        <div class="stat-box-num">~4T</div>
+        <div class="stat-box-label">Metric tons of gold seized by Malian authorities</div>
+      </div>
+    </div>
+
+    <h3 style="font-family:'Playfair Display',serif;font-size:1.2rem;color:var(--text);margin-bottom:1.5rem;font-weight:600;">Dispute Chronology</h3>
+
+    <div class="two-col">
+      <div>
+        <div class="filter-bar">
+          <button class="filter-btn active" onclick="filterTimeline('all', this)">All Events</button>
+          <button class="filter-btn" onclick="filterTimeline('escalation', this)">Escalations</button>
+          <button class="filter-btn" onclick="filterTimeline('resolution', this)">Resolution</button>
+        </div>
+
+        <div class="timeline" id="barrickTimeline">
+          <div class="timeline-item" data-type="start">
+            <div class="timeline-date">April 2023</div>
+            <div class="timeline-event">Malian auditors release preliminary findings claiming <strong>Barrick owes substantial unpaid taxes</strong>. Barrick calls findings "legally and factually flawed."</div>
+          </div>
+          <div class="timeline-item" data-type="start">
+            <div class="timeline-date">August 2023</div>
+            <div class="timeline-event">Revised <strong>Mining Code (Law No. 2023-040)</strong> enacted, raising state entitlement in projects and increasing operator obligations.</div>
+          </div>
+          <div class="timeline-item escalation" data-type="escalation">
+            <div class="timeline-date">September 2024</div>
+            <div class="timeline-event"><strong>Four Barrick senior employees arrested</strong> at the Loulo-Gounkoto site on accusations of financial crimes.</div>
+          </div>
+          <div class="timeline-item" data-type="start">
+            <div class="timeline-date">October 2024</div>
+            <div class="timeline-event">Barrick makes an <strong>$85 million good-faith payment</strong> in an attempt to reach a negotiated resolution.</div>
+          </div>
+          <div class="timeline-item escalation" data-type="escalation">
+            <div class="timeline-date">December 2024</div>
+            <div class="timeline-event">Malian junta issues <strong>arrest warrant for CEO Mark Bristow</strong> for money laundering. All gold shipments from the complex blocked.</div>
+          </div>
+          <div class="timeline-item escalation" data-type="escalation">
+            <div class="timeline-date">January 2025</div>
+            <div class="timeline-event">Authorities <strong>seize ~3 metric tons of gold</strong> (est. $245–318M) and transfer to state-owned Banque Malienne de Solidarité. Barrick suspends operations; files ICSID arbitration.</div>
+          </div>
+          <div class="timeline-item escalation" data-type="escalation">
+            <div class="timeline-date">April 2025</div>
+            <div class="timeline-event">Barrick's <strong>Bamako office closed</strong> by government order.</div>
+          </div>
+          <div class="timeline-item escalation" data-type="escalation">
+            <div class="timeline-date">June 2025</div>
+            <div class="timeline-event">Bamako Commercial Tribunal places Loulo-Gounkoto under <strong>provisional administration</strong>; Soumana Makadji appointed administrator.</div>
+          </div>
+          <div class="timeline-item escalation" data-type="escalation">
+            <div class="timeline-date">July 2025</div>
+            <div class="timeline-event">Government helicopters <strong>seize an additional ~1 metric ton of gold</strong> from the site.</div>
+          </div>
+          <div class="timeline-item resolution" data-type="resolution">
+            <div class="timeline-date">November 2025</div>
+            <div class="timeline-event"><strong>Comprehensive settlement reached.</strong> Barrick agrees to pay ~$430M. All charges dropped; four detained employees released; provisional administration terminated; seized gold to be returned.</div>
+          </div>
+          <div class="timeline-item resolution" data-type="resolution">
+            <div class="timeline-date">December 2025</div>
+            <div class="timeline-event">Barrick ends ICSID arbitration and <strong>returns to operational control</strong> of Loulo-Gounkoto. CEO Mark Bristow had departed prior to final settlement.</div>
+          </div>
+        </div>
+      </div>
+
+      <div>
+        <div class="chart-card">
+          <div class="chart-card-eyebrow">Financial Impact</div>
+          <div class="chart-card-title">Barrick Payments &amp; Seizures Timeline</div>
+          <div style="position:relative;height:260px;">
+            <canvas id="barrickChart" width="400" height="260"></canvas>
+          </div>
+          <div class="chart-note">Values in USD millions. Seizure estimates based on prevailing gold prices.</div>
+        </div>
+
+        <div class="chart-card" style="margin-top:1.5rem;">
+          <div class="chart-card-eyebrow">Parallel Case</div>
+          <div class="chart-card-title">Resolute Mining: Similar Dispute</div>
+          <div style="padding:0.5rem 0;">
+            <p style="font-size:0.85rem;color:var(--text2);line-height:1.7;font-weight:300;">In November 2024, Resolute Mining CEO <strong style="color:var(--text)">Terence Holohan was detained in Bamako</strong>. The company paid <strong style="color:var(--gold);">$160 million</strong> to resolve a parallel tax dispute — confirming the Barrick case is not an isolated incident but a pattern of sovereign enforcement.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- SECTION III: SANCTIONS -->
+<div class="content" id="sanctions">
+  <div class="doc-section">
+    <div class="section-eyebrow">
+      <span class="section-roman">Section III</span>
+      <div class="section-rule"></div>
+    </div>
+    <h2 class="section-title">Sanctions Risk: <em>Wagner / Africa Corps</em></h2>
+
+    <p class="body-text">
+      Beyond sovereign risk, Mali's gold sector presents a unique compliance exposure: <span class="tooltip-wrap"><span class="tooltip-trigger">OFAC-designated</span><span class="tooltip-box">Office of Foreign Assets Control (OFAC) is a division of the U.S. Treasury that administers and enforces economic and trade sanctions. Doing business with designated entities can expose firms to significant civil and criminal liability.</span></span> Russian paramilitary actors are directly embedded in the gold supply chain. The <strong>Wagner Group</strong>, rebranded under Russia's Ministry of Defense as <strong>Africa Corps</strong>, maintains an operational presence in Mali's artisanal mining sector.
+    </p>
+
+    <p class="body-text">
+      Russian mercenaries entered Mali in 2021–2022. At peak, approximately <strong>2,000 Wagner personnel</strong> were deployed; ~1,000 remained as of early 2024. The Malian government reportedly pays ~$10.8 million per month for services, with payment partially made in gold. Wagner captured at least four artisanal mining sites — including Intahaka, Mali's largest artisanal mine in the Gao region — with Malian military assistance.
+    </p>
+
+    <div class="chart-card" style="max-width:600px; margin:2rem 0;">
+      <div class="chart-card-eyebrow">Supply Chain Exposure</div>
+      <div class="chart-card-title">Global Artisanal Gold: Sub-Saharan Africa Share</div>
+      <div style="position:relative;height:220px;">
+        <canvas id="artisanalChart" width="500" height="220"></canvas>
+      </div>
+      <div class="chart-note">ASM = Artisanal &amp; Small-Scale Mining. Data: U.S. six-agency Africa Gold Advisory, June 2023.</div>
+    </div>
+
+    <h3 style="font-family:'Playfair Display',serif;font-size:1.2rem;color:var(--text);margin:2rem 0 1rem;font-weight:600;">OFAC Designations — Key Entities & Individuals</h3>
+
+    <div class="sanctions-grid">
+      <div class="sanction-row header-row">
+        <div class="sanction-col-label">Entity / Individual</div>
+        <div class="sanction-col-label">Designation Date</div>
+        <div class="sanction-col-label">Basis</div>
+      </div>
+      <div class="sanction-row">
+        <div>
+          <div class="sanction-name">Ivan Aleksandrovich Maslov</div>
+          <span class="sanction-type type-individual">Individual</span>
+        </div>
+        <div class="sanction-date">May 2023</div>
+        <div class="sanction-desc">Head of Wagner units in Mali. Coordinated with Malian government officials on mining and weapons deals.</div>
+      </div>
+      <div class="sanction-row">
+        <div>
+          <div class="sanction-name">Andrey Nikolayevich Ivanov</div>
+          <span class="sanction-type type-individual">Individual</span>
+        </div>
+        <div class="sanction-date">June 2023</div>
+        <div class="sanction-desc">Executive at Africa Politology. Coordinated with key Malian officials on mining operations linked to Prigozhin's network.</div>
+      </div>
+      <div class="sanction-row">
+        <div>
+          <div class="sanction-name">Three Malian Transition Officials</div>
+          <span class="sanction-type type-individual">Individual</span>
+        </div>
+        <div class="sanction-date">July 2023</div>
+        <div class="sanction-desc">Designated for facilitating Wagner's deployment. One official specifically linked to connecting Wagner with gold mining operations in Mali.</div>
+      </div>
+      <div class="sanction-row">
+        <div>
+          <div class="sanction-name">Midas Ressources SARLU</div>
+          <span class="sanction-type type-entity">Entity</span>
+        </div>
+        <div class="sanction-date">June 2023</div>
+        <div class="sanction-desc">CAR-based mining company affiliated with late Yevgeny Prigozhin. Holds concession to billion-dollar Ndassima gold mine.</div>
+      </div>
+      <div class="sanction-row">
+        <div>
+          <div class="sanction-name">Industrial Resources General Trading</div>
+          <span class="sanction-type type-entity">Entity</span>
+        </div>
+        <div class="sanction-date">June 2023</div>
+        <div class="sanction-desc">Dubai-based distributor. Provided financial services to Prigozhin; key node in UAE transshipment corridor converting African gold to USD.</div>
+      </div>
+      <div class="sanction-row">
+        <div>
+          <div class="sanction-name">Mining Industries SARLU & Logistique Economique Etrangere SARLU</div>
+          <span class="sanction-type type-entity">Entity</span>
+        </div>
+        <div class="sanction-date">May 2024</div>
+        <div class="sanction-desc">Designated for enabling Wagner-linked illegal mining operations across Central Africa.</div>
+      </div>
+    </div>
+
+    <p class="body-text" style="margin-top:2rem;">
+      In June 2023, six U.S. government agencies issued a joint advisory warning that ASM gold in sub-Saharan Africa generates an estimated <strong>20% of the world's gold supply</strong> but operates largely outside formal regulatory oversight. Russia has generated over <strong>$2.5 billion</strong> from African gold sales since its invasion of Ukraine in February 2022. The <strong>UAE transshipment corridor</strong> — via entities like Industrial Resources General Trading — represents a particular screening priority for downstream firms.
+    </p>
+  </div>
+</div>
+
+<!-- SECTION IV: RECOMMENDATIONS -->
+<div class="content" id="recommendations">
+  <div class="doc-section">
+    <div class="section-eyebrow">
+      <span class="section-roman">Section IV</span>
+      <div class="section-rule"></div>
+    </div>
+    <h2 class="section-title">Assessment & <em>Recommendations</em></h2>
+
+    <p class="body-text">
+      Mali's gold sector represents a convergence of sovereign, sanctions, reputational, and operational risk at levels that are among the highest in the global mining industry. The Barrick case demonstrates that even the most established operators, backed by decades of investment and formal contractual protections, are not immune to asset seizure, executive detention, or coerced renegotiation. The concurrent presence of OFAC-designated paramilitary actors in the artisanal supply chain adds a distinct and serious compliance dimension.
+    </p>
+
+    <div class="rec-grid">
+      <div class="rec-card">
+        <div class="rec-num">01</div>
+        <div class="rec-title">Conduct Enhanced Counterparty Screening</div>
+        <div class="rec-body">Screen all direct and indirect counterparties, financial instruments, and supply chain links against OFAC's Specially Designated Nationals list. Particular attention to Wagner/Africa Corps-affiliated entities and the UAE transshipment corridor (Dubai-based intermediaries).</div>
+      </div>
+      <div class="rec-card">
+        <div class="rec-title">Monitor Regulatory Developments</div>
+        <div class="rec-num">02</div>
+        <div class="rec-title">Monitor Regulatory Developments</div>
+        <div class="rec-body">The Loulo-Gounkoto mining permit expires February 2026. Permit renewal terms under the 2023 Mining Code remain highly uncertain. Barrick's post-settlement operational status will serve as a key leading indicator of junta attitudes toward foreign investment.</div>
+      </div>
+      <div class="rec-card">
+        <div class="rec-num">03</div>
+        <div class="rec-title">Assess Regional Portfolio Risk</div>
+        <div class="rec-body">Sahel resource nationalism is not Mali-specific. Niger, Burkina Faso, Senegal, and Ivory Coast have all enacted significant interventions. Exposure to any single Sahelian jurisdiction may signal broader, systemic portfolio risk across the region.</div>
+      </div>
+      <div class="rec-card">
+        <div class="rec-num">04</div>
+        <div class="rec-title">Engage Linguistic & Cultural Expertise</div>
+        <div class="rec-body">A significant portion of Mali's information environment operates in Bambara and French. Critical OSINT — including community-level disputes, local governance conflicts, and informal mining agreements — is inaccessible through English-language monitoring alone. Cultural context (e.g., <em>sanankɛya</em> governance) also shapes how disputes develop and resolve.</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- SOURCES -->
+<div class="content" id="sources">
+  <div class="doc-section">
+    <div class="section-eyebrow">
+      <span class="section-roman">Sources</span>
+      <div class="section-rule"></div>
+    </div>
+    <h2 class="section-title">Primary <em>Sources</em></h2>
+    <p class="body-text">All sources used in this assessment. Click any source to open the original document or article.</p>
+
+    <div class="sources-grid" id="sourcesGrid"></div>
+  </div>
+</div>
+
+<!-- ABOUT -->
+<div class="content">
+  <div class="about-strip">
+    <div>
+      <div class="about-title">About the Author</div>
+      <div class="about-name">Safiatou Coulibaly</div>
+      <p class="about-desc" style="margin-bottom:1rem;">
+        My mother is from Mali. That's where this paper started: not in a library, not in a classroom, but in a conversation with her about what was happening back home. I kept hearing about gold, about the junta, about foreign companies and Russian mercenaries and mines being seized. It didn't feel abstract. It felt personal.
+      </p>
+      <p class="about-desc" style="margin-bottom:1rem;">
+        What began as curiosity, looking things up to understand what she was describing, turned into something I couldn't stop pulling on. One source led to another. OFAC press releases. ICSID arbitration filings. Investigative reports in French and English. The OECD supply chain assessment. I started taking notes, then organizing them, then writing. By the time I had a draft, I realized I had built a structured due diligence assessment without setting out to.
+      </p>
+      <p class="about-desc">
+        I'm a data and operations analyst with a B.S. in Information Systems from UMBC (Cum Laude, 3.56 GPA) and published research in learning analytics at the LAK'25 conference. My professional work lives in data pipelines, geographic analysis, and reporting, but this paper reminded me that the most rigorous analysis often starts with something you actually care about. Mali is not an abstraction to me. It's family.
+      </p>
+    </div>
+    <div class="about-links">
+      <div class="about-link-item">
+        <div class="about-link-label">Email</div>
+        <a class="about-link-val" href="mailto:safiatou2.coulibaly@gmail.com">safiatou2.coulibaly@gmail.com</a>
+      </div>
+      <div class="about-link-item">
+        <div class="about-link-label">LinkedIn</div>
+        <a class="about-link-val" href="https://linkedin.com/in/safiatoucoulibaly1" target="_blank">linkedin.com/in/safiatoucoulibaly1</a>
+      </div>
+      <div class="about-link-item">
+        <div class="about-link-label">Data Portfolio</div>
+        <a class="about-link-val" href="https://safiatou2coulibaly-sys.github.io/data-portfolio" target="_blank">View Portfolio →</a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<footer>
+  <div class="footer-text"><span>///</span> Mali Gold Risk Assessment · Safiatou Coulibaly · January 2026</div>
+  <div class="footer-text">Open-source intelligence · For research and educational use</div>
+</footer>
+
+<script>
+window.addEventListener('load', function() {
+// ── CHART DEFAULTS ───────────────────────────────────────
+Chart.defaults.color = '#787468';
+Chart.defaults.font.family = 'JetBrains Mono';
+Chart.defaults.font.size = 10;
+
+const gridColor = 'rgba(255,255,255,0.05)';
+const gold = '#c9972a';
+const goldLight = '#e8b84b';
+const red = '#c0392b';
+
+// 1. Gold Share of Economy
+new Chart(document.getElementById('goldShareChart'), {
+  type: 'bar',
+  data: {
+    labels: ['2015','2016','2017','2018','2019','2020','2021','2022','2023','2024'],
+    datasets: [
+      { label: 'Gold (% exports)', data: [72,74,76,77,79,80,81,82,80,80], backgroundColor: 'rgba(201,151,42,0.75)', borderRadius: 2 },
+      { label: 'Other exports', data: [28,26,24,23,21,20,19,18,20,20], backgroundColor: 'rgba(120,116,104,0.3)', borderRadius: 2 }
+    ]
+  },
+  options: {
+    responsive: true, maintainAspectRatio: false,
+    plugins: { legend: { display: true, labels: { font: { size: 9 }, boxWidth: 10 } },
+      tooltip: { backgroundColor: '#1a1a17', borderColor: 'rgba(201,151,42,0.3)', borderWidth: 1 } },
+    scales: {
+      x: { stacked: true, grid: { display: false }, ticks: { font: { size: 9 } } },
+      y: { stacked: true, grid: { color: gridColor }, ticks: { callback: v => v + '%', font: { size: 9 } } }
+    }
+  }
+});
+
+// 2. Regional Nationalism
+new Chart(document.getElementById('nationalismChart'), {
+  type: 'bar',
+  data: {
+    labels: ['Mali','Niger','Burkina Faso','Senegal','Ivory Coast'],
+    datasets: [{
+      label: 'Sovereign interventions',
+      data: [8, 3, 4, 2, 2],
+      backgroundColor: ['rgba(192,57,43,0.8)','rgba(201,151,42,0.6)','rgba(201,151,42,0.5)','rgba(201,151,42,0.4)','rgba(201,151,42,0.35)'],
+      borderRadius: 3,
+    }]
+  },
+  options: {
+    responsive: true, maintainAspectRatio: false,
+    indexAxis: 'y',
+    plugins: { legend: { display: false },
+      tooltip: { backgroundColor: '#1a1a17', borderColor: 'rgba(201,151,42,0.3)', borderWidth: 1 } },
+    scales: {
+      x: { grid: { color: gridColor }, ticks: { font: { size: 9 } } },
+      y: { grid: { display: false }, ticks: { font: { size: 9 } } }
+    }
+  }
+});
+
+// 3. Barrick Financial Chart
+new Chart(document.getElementById('barrickChart'), {
+  type: 'bar',
+  data: {
+    labels: [['Good Faith', 'Payment (Oct 24)'], ['Gold Seized', 'Jan 25 (est.)'], ['Gold Seized', 'Jul 25'], ['Final', 'Settlement']],
+    datasets: [{
+      label: 'USD Millions',
+      data: [85, 280, 60, 430],
+      backgroundColor: ['rgba(201,151,42,0.6)', 'rgba(192,57,43,0.75)', 'rgba(192,57,43,0.75)', 'rgba(39,174,96,0.65)'],
+      borderRadius: 3,
+    }]
+  },
+  options: {
+    responsive: true, maintainAspectRatio: false,
+    plugins: { legend: { display: false },
+      tooltip: { backgroundColor: '#1a1a17', borderColor: 'rgba(201,151,42,0.3)', borderWidth: 1,
+        callbacks: { label: c => ' $' + c.parsed.y + 'M' } } },
+    scales: {
+      x: { grid: { display: false }, ticks: { font: { size: 9 }, maxRotation: 0 } },
+      y: { grid: { color: gridColor }, ticks: { callback: v => '$' + v + 'M', font: { size: 9 } } }
+    }
+  }
+});
+
+// 4. Artisanal Gold
+new Chart(document.getElementById('artisanalChart'), {
+  type: 'doughnut',
+  data: {
+    labels: ['Sub-Saharan Africa ASM', 'Other global ASM', 'Formal / industrial'],
+    datasets: [{
+      data: [20, 20, 60],
+      backgroundColor: ['rgba(192,57,43,0.85)', 'rgba(201,151,42,0.65)', 'rgba(120,116,104,0.35)'],
+      borderWidth: 0,
+      hoverOffset: 8,
+    }]
+  },
+  options: {
+    responsive: true, maintainAspectRatio: false,
+    cutout: '58%',
+    plugins: {
+      legend: { position: 'bottom', labels: { color: '#b8b4ac', font: { size: 9 }, boxWidth: 10, padding: 14 } },
+      tooltip: {
+        backgroundColor: '#1a1a17', borderColor: 'rgba(201,151,42,0.3)', borderWidth: 1,
+        callbacks: { label: ctx => ' ' + ctx.parsed + '% of world gold supply' }
+      }
+    }
+  }
+});
+
+// ── TIMELINE FILTER ──────────────────────────────────────
+function filterTimeline(type, btn) {
+  document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  document.querySelectorAll('.timeline-item').forEach(item => {
+    if (type === 'all') { item.style.display = ''; return; }
+    item.style.display = item.dataset.type === type ? '' : 'none';
+  });
+}
+
+function scrollTo(selector) {
+  document.querySelector(selector)?.scrollIntoView({ behavior: 'smooth' });
+}
+
+// ── SOURCES DATA ─────────────────────────────────────────
+const sources = [
+  { num: '01', title: 'Treasury Sanctions Illicit Gold Companies Funding Wagner Forces', org: 'U.S. Dept. of the Treasury / OFAC', date: 'June 27, 2023', url: 'https://home.treasury.gov/news/press-releases/jy1581' },
+  { num: '02', title: "Mali's gold mining disputes and the fight for economic justice", org: 'Al Jazeera', date: 'December 17, 2024', url: 'https://www.aljazeera.com/opinions/2024/12/17/malis-gold-mining-disputes-and-the-fight-for-economic-justice' },
+  { num: '03', title: 'Russia Tightens Control of Malian Gold', org: 'Africa Defense Forum', date: 'April 9, 2024', url: 'https://adf-magazine.com/2024/04/russia-tightens-control-of-malian-gold' },
+  { num: '04', title: 'Gold at the Crossroads: Supply Chains of Gold Produced in Burkina Faso, Mali and Niger', org: 'OECD / Liptako-Gourma Authority', date: '2018', url: 'https://www.oecd.org/content/dam/oecd/en/publications/reports/2018/01/gold-at-the-crossroad_d5e73285/47718082-en.pdf' },
+  { num: '05', title: 'Barrick Mining v. Republic of Mali: The Loulo–Gounkoto ICSID Dispute Settled', org: 'Afronomicslaw', date: '2025', url: 'https://www.afronomicslaw.org/category/analysis/barrick-mining-corporation-v-republic-mali-loulo-gounkoto-mining-complex-icsid' },
+  { num: '06', title: 'Resolute CEO detention in Mali comes amid West Africa mining squeeze', org: 'Mining.com', date: 'November 11, 2024', url: 'https://www.mining.com/web/resolute-ceo-detention-in-mali-comes-amid-west-africa-mining-squeeze' },
+  { num: '07', title: "Barrick's Loulo-Gounkoto Timeline on Mali", org: 'Barrick Mining Corporation', date: 'Ongoing', url: 'https://www.barrick.com/English/operations/loulo-gounkoto/timeline/default.aspx' },
+  { num: '08', title: 'Mali closes Barrick Gold office amid ongoing mining dispute', org: 'CIM Magazine', date: 'April 17, 2025', url: 'https://magazine.cim.org/en/news/2025/mali-closes-barrick-gold-office-amid-ongoing-mining-dispute-en' },
+  { num: '09', title: 'Mali junta takes control of Canadian-owned Barrick Gold mine amid tax dispute', org: 'France 24', date: 'June 17, 2025', url: 'https://www.france24.com/en/africa/20250617-mali-junta-takes-control-of-canadian-owned-barrick-gold-mine-amid-tax-dispute' },
+  { num: '10', title: "Barrick Opposes Mali Government's Attempt to Take Over Loulo-Gounkoto", org: 'Barrick Mining Corporation', date: 'May 2025', url: 'https://www.barrick.com' },
+  { num: '11', title: 'Barrick reaches agreement with Mali to end dispute over Loulo-Gounkoto mines', org: 'The Globe and Mail', date: 'November 25, 2025', url: 'https://www.theglobeandmail.com/business/article-barrick-mali-loulo-gounkoto-mines' },
+  { num: '12', title: 'Barrick, Mali strike deal to resolve Loulo-Gounkoto mining disputes', org: 'Mining Technology', date: 'November 25, 2025', url: 'https://www.mining-technology.com/news/barrick-mali-deal-resolve-mining-disputes' },
+  { num: '13–14', title: 'Russia Tightens Control of Malian Gold (operational presence details)', org: 'Africa Defense Forum', date: 'April 9, 2024', url: 'https://adf-magazine.com/2024/04/russia-tightens-control-of-malian-gold' },
+  { num: '15', title: 'Treasury Targets Malian Officials Facilitating Wagner Group', org: 'U.S. Dept. of the Treasury / OFAC', date: 'July 24, 2023', url: 'https://home.treasury.gov/news/press-releases/jy1645' },
+  { num: '16', title: 'Treasury Sanctions Wagner Group-linked Companies in Central African Republic', org: 'U.S. Dept. of the Treasury / OFAC', date: 'May 30, 2024', url: 'https://home.treasury.gov/news/press-releases/jy2384' },
+  { num: '17', title: 'Africa Gold Advisory (Six-Agency Joint Advisory)', org: 'U.S. Depts. of State, Treasury, Commerce, DHS, Labor, USAID', date: 'June 27, 2023', url: 'https://ofac.treasury.gov/system/files/2023-06/africa_gold_advisory_06272023.pdf' },
+  { num: '18', title: 'The Blood Gold Report 2023', org: 'Blood Gold Report', date: 'December 2023', url: 'https://bloodgoldreport.com/wp-content/uploads/2023/12/The-Blood-Gold-Report-2023-December.pdf' },
+];
+
+const grid = document.getElementById('sourcesGrid');
+sources.forEach(s => {
+  const card = document.createElement('div');
+  card.className = 'source-card';
+  card.innerHTML = `
+    <div class="source-num">[${s.num}]</div>
+    <div class="source-title">${s.title}</div>
+    <div class="source-org">${s.org} · ${s.date}</div>
+    ${s.url
+      ? `<a class="source-link" href="${s.url}" target="_blank" rel="noopener noreferrer">
+           <svg width="10" height="10" viewBox="0 0 10 10" fill="none"><path d="M1 9L9 1M9 1H4M9 1V6" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg>
+           Open Source
+         </a>`
+      : `<span class="no-link">No public URL — print/report source</span>`
+    }`;
+  grid.appendChild(card);
+});
+
+}); // end window.onload
+</script>
+</body>
+</html>
