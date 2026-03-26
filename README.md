@@ -25,3 +25,11 @@ End-to-end data pipeline analysis on 1,470 employee records — from raw dirty d
 Structured open-source intelligence (OSINT) risk assessment of Mali's gold mining sector, covering sovereign risk, sanctions exposure, and reputational risk for entities with ties to Mali's gold supply chain. Draws on U.S. Treasury OFAC designations, ICSID arbitration records, and investigative reporting across 18 primary sources. Key findings include the Barrick–Mali dispute ($430M settlement), Wagner/Africa Corps embedded presence in artisanal mining, and the UAE transshipment corridor as a compliance screening priority.
 
 **Live page:** https://safiatou2coulibaly-sys.github.io/data-portfolio/mali_due_diligence.html
+
+---
+
+## Project 04 — SQL Playground
+
+Fully in-browser SQL environment powered by sql.js — write and run real queries against a live dataset with no server or setup required. Built to demonstrate SQL fluency through hands-on, interactive analysis directly in the browser.
+
+**Live page:** https://safiatou2coulibaly-sys.github.io/data-portfolio/sql-playground.html
