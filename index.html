@@ -254,6 +254,58 @@ nav {
 .tag-risk { background: rgba(201,151,42,0.12); color: var(--gold); }
 .tag-geo { background: rgba(123,79,181,0.08); color: #7b4fb5; }
 .tag-excel { background: rgba(14,14,14,0.06); color: var(--muted); }
+.tag-interactive { background: rgba(42,92,143,0.1); color: var(--accent2); }
+
+/* Project 04 — SQL blue */
+.visual-04 {
+  background: #0e1a2b;
+  font-family: 'DM Mono', monospace;
+}
+
+.sql-editor {
+  width: 100%;
+  max-width: 300px;
+}
+
+.sql-editor-bar {
+  background: #1a2a3f;
+  border: 1px solid #2a3f5a;
+  border-bottom: none;
+  border-radius: 5px 5px 0 0;
+  padding: 0.45rem 0.75rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.sql-editor-dot {
+  width: 7px; height: 7px;
+  border-radius: 50%;
+  background: #2a3f5a;
+}
+
+.sql-editor-filename {
+  font-size: 0.58rem;
+  letter-spacing: 0.06em;
+  color: #4a7fa5;
+  margin-left: auto;
+}
+
+.sql-editor-body {
+  background: #0d1926;
+  border: 1px solid #2a3f5a;
+  border-radius: 0 0 5px 5px;
+  padding: 0.9rem 1rem;
+  font-size: 0.62rem;
+  line-height: 1.85;
+}
+
+.sql-kw  { color: #58a6ff; }
+.sql-fn  { color: #79c0ff; }
+.sql-str { color: #a5d6ff; }
+.sql-cmt { color: #3a5a7a; }
+.sql-val { color: #ffa657; }
+.sql-out { color: #3fb950; }
 
 .card-arrow {
   font-size: 1.1rem;
@@ -719,6 +771,51 @@ footer {
         <div class="risk-row">
           <span class="risk-row-label">Reputational &amp; Operational</span>
           <span class="risk-badge badge-high">● High</span>
+        </div>
+      </div>
+    </div>
+  </a>
+
+
+  <!-- PROJECT 04 -->
+  <a class="project-card fade-up d5" href="sql-playground.html">
+    <div class="card-text">
+      <div>
+        <div class="card-number">Project 04 &nbsp;·&nbsp; Interactive SQL</div>
+        <h2 class="card-title">SQL Playground</h2>
+        <p class="card-desc">
+          A fully in-browser SQL environment powered by sql.js — write and run real queries against
+          a live dataset without any server or setup. Built to demonstrate SQL fluency through
+          hands-on, interactive analysis.
+        </p>
+      </div>
+      <div class="card-footer">
+        <div class="card-tags">
+          <span class="card-tag tag-sql">SQL</span>
+          <span class="card-tag tag-interactive">Interactive</span>
+          <span class="card-tag tag-pipeline">In-Browser</span>
+        </div>
+        <span class="card-arrow">→</span>
+      </div>
+    </div>
+    <div class="card-visual visual-04">
+      <div class="sql-editor">
+        <div class="sql-editor-bar">
+          <div class="sql-editor-dot"></div>
+          <div class="sql-editor-dot"></div>
+          <div class="sql-editor-dot"></div>
+          <span class="sql-editor-filename">query.sql</span>
+        </div>
+        <div class="sql-editor-body">
+          <div><span class="sql-kw">SELECT</span> department,</div>
+          <div>&nbsp;&nbsp;<span class="sql-fn">COUNT</span>(*) <span class="sql-kw">AS</span> employees,</div>
+          <div>&nbsp;&nbsp;<span class="sql-fn">ROUND</span>(<span class="sql-fn">AVG</span>(salary),<span class="sql-val">0</span>) <span class="sql-kw">AS</span> avg_sal</div>
+          <div><span class="sql-kw">FROM</span> staff</div>
+          <div><span class="sql-kw">WHERE</span> status = <span class="sql-str">'active'</span></div>
+          <div><span class="sql-kw">GROUP BY</span> department</div>
+          <div><span class="sql-kw">ORDER BY</span> avg_sal <span class="sql-kw">DESC</span>;</div>
+          <div>&nbsp;</div>
+          <div><span class="sql-out">▶ 6 rows returned (12ms)</span></div>
         </div>
       </div>
     </div>

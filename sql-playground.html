@@ -1,0 +1,1045 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SQL Playground — Safiatou Coulibaly</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Mono:wght@300;400;500&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/sql.js/1.10.2/sql-wasm.js"></script>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --ink: #0e0e0e;
+    --paper: #f5f2ec;
+    --accent: #c8440a;
+    --accent2: #2a5c8f;
+    --muted: #7a7570;
+    --rule: #d6d0c4;
+    --card: #ffffff;
+    --mono: 'DM Mono', monospace;
+    --serif: 'DM Serif Display', serif;
+    --sans: 'DM Sans', sans-serif;
+    --green: #2d8050;
+    --red: #b03030;
+  }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: var(--sans);
+    background: var(--paper);
+    color: var(--ink);
+    line-height: 1.6;
+    min-height: 100vh;
+  }
+
+  /* NAV */
+  nav {
+    position: sticky;
+    top: 0;
+    z-index: 50;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 1rem 2.5rem;
+    background: rgba(245,242,236,0.95);
+    backdrop-filter: blur(10px);
+    border-bottom: 1px solid var(--rule);
+  }
+
+  .nav-brand {
+    font-family: var(--serif);
+    font-size: 1.1rem;
+    color: var(--ink);
+    text-decoration: none;
+  }
+
+  .nav-links { display: flex; gap: 1.5rem; align-items: center; }
+
+  .nav-links a {
+    font-size: 0.82rem;
+    font-weight: 500;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    color: var(--muted);
+    text-decoration: none;
+    transition: color 0.2s;
+  }
+  .nav-links a:hover, .nav-links a.active { color: var(--accent); }
+
+  /* HERO */
+  .hero {
+    padding: 4rem 2.5rem 2rem;
+    max-width: 1100px;
+    margin: 0 auto;
+  }
+
+  .hero-eyebrow {
+    font-family: var(--mono);
+    font-size: 0.72rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 0.75rem;
+  }
+
+  .hero h1 {
+    font-family: var(--serif);
+    font-size: clamp(2rem, 4vw, 3rem);
+    line-height: 1.15;
+    margin-bottom: 1rem;
+  }
+
+  .hero p {
+    font-size: 1rem;
+    color: var(--muted);
+    max-width: 600px;
+    margin-bottom: 2rem;
+  }
+
+  /* SCHEMA STRIP */
+  .schema-strip {
+    background: var(--ink);
+    color: #e8e4dc;
+    padding: 1.5rem 2.5rem;
+    font-family: var(--mono);
+    font-size: 0.78rem;
+    overflow-x: auto;
+  }
+
+  .schema-strip .schema-label {
+    color: var(--accent);
+    font-size: 0.65rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    margin-bottom: 0.75rem;
+  }
+
+  .schema-tables {
+    display: flex;
+    gap: 3rem;
+    flex-wrap: wrap;
+  }
+
+  .schema-table h4 {
+    color: #f0c070;
+    margin-bottom: 0.4rem;
+    font-size: 0.82rem;
+  }
+
+  .schema-table ul { list-style: none; }
+
+  .schema-table li {
+    color: #a8c4e0;
+    line-height: 1.8;
+  }
+
+  .schema-table li span {
+    color: #7a7570;
+    margin-left: 0.5rem;
+    font-size: 0.7rem;
+  }
+
+  .schema-table li.pk { color: #f0c070; }
+
+  /* MAIN LAYOUT */
+  .main {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 2rem 2.5rem 4rem;
+    display: grid;
+    grid-template-columns: 280px 1fr;
+    gap: 2rem;
+    align-items: start;
+  }
+
+  /* SIDEBAR — SAMPLE QUERIES */
+  .sidebar h3 {
+    font-family: var(--mono);
+    font-size: 0.68rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 1rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 1px solid var(--rule);
+  }
+
+  .query-group { margin-bottom: 1.5rem; }
+
+  .query-group-label {
+    font-family: var(--mono);
+    font-size: 0.62rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--accent2);
+    margin-bottom: 0.5rem;
+  }
+
+  .query-btn {
+    display: block;
+    width: 100%;
+    text-align: left;
+    background: var(--card);
+    border: 1px solid var(--rule);
+    border-radius: 4px;
+    padding: 0.6rem 0.75rem;
+    margin-bottom: 0.4rem;
+    font-family: var(--sans);
+    font-size: 0.8rem;
+    color: var(--ink);
+    cursor: pointer;
+    transition: all 0.15s;
+    line-height: 1.4;
+  }
+
+  .query-btn:hover {
+    border-color: var(--accent);
+    color: var(--accent);
+    background: #fdf8f4;
+  }
+
+  .query-btn.active {
+    border-color: var(--accent);
+    background: #fdf3ee;
+    color: var(--accent);
+    font-weight: 600;
+  }
+
+  .query-btn .tag {
+    display: inline-block;
+    font-family: var(--mono);
+    font-size: 0.58rem;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    background: var(--ink);
+    color: var(--paper);
+    padding: 0.1rem 0.35rem;
+    border-radius: 2px;
+    margin-bottom: 0.25rem;
+  }
+
+  .query-btn.active .tag { background: var(--accent); }
+
+  /* EDITOR AREA */
+  .editor-area {}
+
+  .editor-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 0.75rem;
+  }
+
+  .editor-header-left {
+    font-family: var(--mono);
+    font-size: 0.72rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+
+  .run-btn {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    background: var(--accent);
+    color: white;
+    border: none;
+    border-radius: 4px;
+    padding: 0.55rem 1.2rem;
+    font-family: var(--sans);
+    font-size: 0.82rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.2s, transform 0.1s;
+    letter-spacing: 0.02em;
+  }
+
+  .run-btn:hover { background: #a83708; }
+  .run-btn:active { transform: scale(0.98); }
+
+  .run-btn svg { flex-shrink: 0; }
+
+  textarea#sql-editor {
+    width: 100%;
+    height: 180px;
+    background: var(--ink);
+    color: #e0ddd6;
+    font-family: var(--mono);
+    font-size: 0.85rem;
+    line-height: 1.7;
+    border: none;
+    border-radius: 6px 6px 0 0;
+    padding: 1.25rem 1.5rem;
+    resize: vertical;
+    outline: none;
+    tab-size: 2;
+  }
+
+  .editor-toolbar {
+    background: #1e1e1e;
+    border-radius: 0 0 6px 6px;
+    padding: 0.5rem 1rem;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    border-top: 1px solid #333;
+  }
+
+  .toolbar-hint {
+    font-family: var(--mono);
+    font-size: 0.65rem;
+    color: #666;
+    flex: 1;
+  }
+
+  .clear-btn {
+    background: transparent;
+    border: 1px solid #444;
+    color: #888;
+    border-radius: 3px;
+    padding: 0.25rem 0.6rem;
+    font-family: var(--mono);
+    font-size: 0.65rem;
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+  .clear-btn:hover { border-color: #888; color: #ccc; }
+
+  /* RESULTS */
+  .results-area { margin-top: 1.5rem; }
+
+  .results-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 0.75rem;
+  }
+
+  .results-label {
+    font-family: var(--mono);
+    font-size: 0.68rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+
+  .results-meta {
+    font-family: var(--mono);
+    font-size: 0.68rem;
+    color: var(--green);
+  }
+
+  .results-meta.error { color: var(--red); }
+
+  .table-wrap {
+    overflow-x: auto;
+    border: 1px solid var(--rule);
+    border-radius: 6px;
+    background: var(--card);
+  }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.82rem;
+  }
+
+  thead th {
+    background: #f0ede6;
+    font-family: var(--mono);
+    font-size: 0.68rem;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--muted);
+    padding: 0.65rem 1rem;
+    text-align: left;
+    border-bottom: 1px solid var(--rule);
+    white-space: nowrap;
+  }
+
+  tbody td {
+    padding: 0.6rem 1rem;
+    border-bottom: 1px solid #f0ede6;
+    color: var(--ink);
+    font-family: var(--mono);
+    font-size: 0.8rem;
+  }
+
+  tbody tr:last-child td { border-bottom: none; }
+  tbody tr:hover td { background: #fafaf7; }
+
+  .empty-state {
+    padding: 3rem;
+    text-align: center;
+    color: var(--muted);
+    font-size: 0.88rem;
+    font-family: var(--sans);
+    border: 1px solid var(--rule);
+    border-radius: 6px;
+    background: var(--card);
+  }
+
+  .empty-state .empty-icon {
+    font-size: 2rem;
+    margin-bottom: 0.5rem;
+    display: block;
+    opacity: 0.4;
+  }
+
+  .error-box {
+    background: #fdf0f0;
+    border: 1px solid #f0c0c0;
+    border-radius: 6px;
+    padding: 1rem 1.25rem;
+    font-family: var(--mono);
+    font-size: 0.8rem;
+    color: var(--red);
+  }
+
+  .insight-box {
+    margin-top: 1rem;
+    background: #f0f6ff;
+    border-left: 3px solid var(--accent2);
+    border-radius: 0 4px 4px 0;
+    padding: 0.75rem 1rem;
+    font-size: 0.82rem;
+    color: var(--accent2);
+    display: none;
+  }
+
+  .insight-box strong { display: block; font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.07em; margin-bottom: 0.25rem; opacity: 0.7; }
+
+  /* FOOTER NOTE */
+  .footer-note {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 0 2.5rem 3rem;
+    border-top: 1px solid var(--rule);
+    padding-top: 2rem;
+    display: flex;
+    align-items: flex-start;
+    gap: 1rem;
+  }
+
+  .footer-note .badge {
+    flex-shrink: 0;
+    background: var(--ink);
+    color: var(--paper);
+    font-family: var(--mono);
+    font-size: 0.6rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    padding: 0.3rem 0.6rem;
+    border-radius: 3px;
+    margin-top: 0.1rem;
+  }
+
+  .footer-note p {
+    font-size: 0.82rem;
+    color: var(--muted);
+    line-height: 1.6;
+  }
+
+  .footer-note a { color: var(--accent2); }
+
+  /* LOADING */
+  .loading-overlay {
+    position: fixed;
+    inset: 0;
+    background: var(--paper);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    z-index: 999;
+    gap: 1rem;
+    transition: opacity 0.4s;
+  }
+
+  .loading-overlay h2 {
+    font-family: var(--serif);
+    font-size: 1.5rem;
+  }
+
+  .loading-overlay p {
+    font-family: var(--mono);
+    font-size: 0.75rem;
+    color: var(--muted);
+    letter-spacing: 0.06em;
+  }
+
+  .spinner {
+    width: 32px;
+    height: 32px;
+    border: 3px solid var(--rule);
+    border-top-color: var(--accent);
+    border-radius: 50%;
+    animation: spin 0.7s linear infinite;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  @media (max-width: 768px) {
+    .main { grid-template-columns: 1fr; }
+    nav { padding: 1rem 1.5rem; }
+    .hero { padding: 2.5rem 1.5rem 1.5rem; }
+    .schema-strip { padding: 1.25rem 1.5rem; }
+    .main { padding: 1.5rem; }
+    .footer-note { padding: 1.5rem; }
+  }
+</style>
+</head>
+<body>
+
+<div class="loading-overlay" id="loading">
+  <div class="spinner"></div>
+  <h2>SQL Playground</h2>
+  <p>Initializing database engine...</p>
+</div>
+
+<nav>
+  <a class="nav-brand" href="https://safiatou2coulibaly-sys.github.io/data-portfolio/">Safiatou Coulibaly</a>
+  <div class="nav-links">
+    <a href="https://safiatou2coulibaly-sys.github.io/data-portfolio/">← Portfolio</a>
+    <a href="#" class="active">SQL Playground</a>
+    <a href="https://www.linkedin.com/in/safiatoucoulibaly1" target="_blank">LinkedIn</a>
+  </div>
+</nav>
+
+<div class="hero">
+  <div class="hero-eyebrow">// Interactive Skill Demo</div>
+  <h1>SQL Query Playground</h1>
+  <p>A live, in-browser SQL environment preloaded with a realistic retail operations dataset. Write your own queries or run the examples to explore joins, aggregations, window functions, and more.</p>
+</div>
+
+<div class="schema-strip">
+  <div class="schema-label">// Database Schema — RetailCo Operations Dataset (4 tables, 500+ rows)</div>
+  <div class="schema-tables">
+    <div class="schema-table">
+      <h4>employees</h4>
+      <ul>
+        <li class="pk">emp_id <span>INTEGER PK</span></li>
+        <li>name <span>TEXT</span></li>
+        <li>department <span>TEXT</span></li>
+        <li>region <span>TEXT</span></li>
+        <li>hire_date <span>TEXT</span></li>
+        <li>salary <span>REAL</span></li>
+        <li>status <span>TEXT</span></li>
+      </ul>
+    </div>
+    <div class="schema-table">
+      <h4>sales</h4>
+      <ul>
+        <li class="pk">sale_id <span>INTEGER PK</span></li>
+        <li>emp_id <span>INTEGER FK</span></li>
+        <li>product_id <span>INTEGER FK</span></li>
+        <li>sale_date <span>TEXT</span></li>
+        <li>quantity <span>INTEGER</span></li>
+        <li>revenue <span>REAL</span></li>
+        <li>region <span>TEXT</span></li>
+      </ul>
+    </div>
+    <div class="schema-table">
+      <h4>products</h4>
+      <ul>
+        <li class="pk">product_id <span>INTEGER PK</span></li>
+        <li>product_name <span>TEXT</span></li>
+        <li>category <span>TEXT</span></li>
+        <li>unit_price <span>REAL</span></li>
+        <li>cost <span>REAL</span></li>
+      </ul>
+    </div>
+    <div class="schema-table">
+      <h4>performance</h4>
+      <ul>
+        <li class="pk">review_id <span>INTEGER PK</span></li>
+        <li>emp_id <span>INTEGER FK</span></li>
+        <li>review_year <span>INTEGER</span></li>
+        <li>score <span>REAL</span></li>
+        <li>rating <span>TEXT</span></li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<div class="main">
+
+  <!-- SIDEBAR -->
+  <div class="sidebar">
+    <h3>// Sample Queries</h3>
+
+    <div class="query-group">
+      <div class="query-group-label">Aggregation</div>
+      <button class="query-btn active" onclick="loadQuery('revenue_by_dept')" id="btn-revenue_by_dept">
+        <span class="tag">GROUP BY</span><br>Revenue by Department
+      </button>
+      <button class="query-btn" onclick="loadQuery('top_products')" id="btn-top_products">
+        <span class="tag">ORDER BY</span><br>Top 10 Products by Revenue
+      </button>
+      <button class="query-btn" onclick="loadQuery('regional_summary')" id="btn-regional_summary">
+        <span class="tag">AVG · COUNT</span><br>Regional Sales Summary
+      </button>
+    </div>
+
+    <div class="query-group">
+      <div class="query-group-label">Joins</div>
+      <button class="query-btn" onclick="loadQuery('sales_with_employee')" id="btn-sales_with_employee">
+        <span class="tag">INNER JOIN</span><br>Sales with Employee Details
+      </button>
+      <button class="query-btn" onclick="loadQuery('product_margin')" id="btn-product_margin">
+        <span class="tag">JOIN · CALC</span><br>Profit Margin by Category
+      </button>
+    </div>
+
+    <div class="query-group">
+      <div class="query-group-label">Filtering & Logic</div>
+      <button class="query-btn" onclick="loadQuery('case_when')" id="btn-case_when">
+        <span class="tag">CASE WHEN</span><br>Salary Band Classification
+      </button>
+      <button class="query-btn" onclick="loadQuery('high_performers')" id="btn-high_performers">
+        <span class="tag">SUBQUERY</span><br>High Performers vs Avg Sales
+      </button>
+    </div>
+
+    <div class="query-group">
+      <div class="query-group-label">Advanced</div>
+      <button class="query-btn" onclick="loadQuery('tenure_analysis')" id="btn-tenure_analysis">
+        <span class="tag">DATE · HAVING</span><br>Tenure & Retention Analysis
+      </button>
+      <button class="query-btn" onclick="loadQuery('yoy_growth')" id="btn-yoy_growth">
+        <span class="tag">CTE · WINDOW</span><br>Year-over-Year Revenue Growth
+      </button>
+    </div>
+  </div>
+
+  <!-- EDITOR + RESULTS -->
+  <div class="editor-area">
+    <div class="editor-header">
+      <div class="editor-header-left">// Query Editor</div>
+      <button class="run-btn" onclick="runQuery()">
+        <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><polygon points="2,1 11,6 2,11" fill="white"/></svg>
+        Run Query
+      </button>
+    </div>
+
+    <textarea id="sql-editor" spellcheck="false"></textarea>
+    <div class="editor-toolbar">
+      <span class="toolbar-hint">Ctrl+Enter to run &nbsp;·&nbsp; Edit freely &nbsp;·&nbsp; All queries run in-browser</span>
+      <button class="clear-btn" onclick="clearEditor()">Clear</button>
+    </div>
+
+    <div class="results-area">
+      <div class="results-header">
+        <span class="results-label">// Results</span>
+        <span class="results-meta" id="results-meta"></span>
+      </div>
+      <div id="results-container">
+        <div class="empty-state">
+          <span class="empty-icon">⌗</span>
+          Select a sample query from the left or write your own, then click <strong>Run Query</strong>.
+        </div>
+      </div>
+      <div class="insight-box" id="insight-box">
+        <strong>// Analyst Insight</strong>
+        <span id="insight-text"></span>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<div class="footer-note">
+  <span class="badge">Note</span>
+  <p>This playground runs entirely in your browser using <a href="https://sql.js.org" target="_blank">sql.js</a> (SQLite compiled to WebAssembly). No data is sent to any server. The dataset is synthetically generated to represent a realistic retail operations scenario with employees across four regions, product sales from 2021 to 2024, and annual performance reviews.</p>
+</div>
+
+<script>
+// ─── QUERY LIBRARY ────────────────────────────────────────────────
+const QUERIES = {
+  revenue_by_dept: {
+    sql: `SELECT
+  e.department,
+  COUNT(DISTINCT e.emp_id)   AS headcount,
+  COUNT(s.sale_id)           AS total_transactions,
+  ROUND(SUM(s.revenue), 2)   AS total_revenue,
+  ROUND(AVG(s.revenue), 2)   AS avg_sale_value
+FROM employees e
+JOIN sales s ON e.emp_id = s.emp_id
+GROUP BY e.department
+ORDER BY total_revenue DESC;`,
+    insight: "GROUP BY with aggregate functions (COUNT, SUM, AVG) is foundational to nearly every business report. This query answers 'which department is driving the most revenue?'"
+  },
+  top_products: {
+    sql: `SELECT
+  p.product_name,
+  p.category,
+  SUM(s.quantity)          AS units_sold,
+  ROUND(SUM(s.revenue), 2) AS total_revenue
+FROM products p
+JOIN sales s ON p.product_id = s.product_id
+GROUP BY p.product_id, p.product_name, p.category
+ORDER BY total_revenue DESC
+LIMIT 10;`,
+    insight: "A simple JOIN + ORDER BY + LIMIT pattern — essential for any leaderboard, top-N report, or ranking in a BA/DA context."
+  },
+  regional_summary: {
+    sql: `SELECT
+  region,
+  COUNT(sale_id)               AS num_sales,
+  ROUND(SUM(revenue), 2)       AS total_revenue,
+  ROUND(AVG(revenue), 2)       AS avg_revenue,
+  ROUND(SUM(quantity), 0)      AS units_sold
+FROM sales
+GROUP BY region
+ORDER BY total_revenue DESC;`,
+    insight: "Regional breakdowns are a staple in operations reporting. This query gives leadership a geographic view of performance without needing a BI tool."
+  },
+  sales_with_employee: {
+    sql: `SELECT
+  s.sale_id,
+  e.name          AS employee_name,
+  e.department,
+  p.product_name,
+  s.sale_date,
+  s.quantity,
+  ROUND(s.revenue, 2) AS revenue
+FROM sales s
+JOIN employees e ON s.emp_id = e.emp_id
+JOIN products  p ON s.product_id = p.product_id
+ORDER BY s.sale_date DESC
+LIMIT 30;`,
+    insight: "Multi-table JOINs are the core of relational analysis. This pattern — joining a fact table to multiple dimension tables — mirrors real-world data warehouse queries."
+  },
+  product_margin: {
+    sql: `SELECT
+  p.category,
+  COUNT(DISTINCT p.product_id)        AS num_products,
+  ROUND(AVG(p.unit_price), 2)         AS avg_price,
+  ROUND(AVG(p.cost), 2)               AS avg_cost,
+  ROUND(AVG(p.unit_price - p.cost), 2) AS avg_margin,
+  ROUND(AVG((p.unit_price - p.cost) / p.unit_price) * 100, 1) AS margin_pct
+FROM products p
+GROUP BY p.category
+ORDER BY margin_pct DESC;`,
+    insight: "Margin analysis is one of the most requested reports in any business context. This query calculates both absolute and percentage margin by category — a key business insight."
+  },
+  case_when: {
+    sql: `SELECT
+  name,
+  department,
+  salary,
+  CASE
+    WHEN salary < 50000  THEN 'Entry Level'
+    WHEN salary < 70000  THEN 'Mid Level'
+    WHEN salary < 95000  THEN 'Senior Level'
+    ELSE                      'Executive'
+  END AS salary_band,
+  region
+FROM employees
+WHERE status = 'Active'
+ORDER BY salary DESC;`,
+    insight: "CASE WHEN is essential for data segmentation and classification — used constantly in reporting to bucket continuous values into meaningful categories."
+  },
+  high_performers: {
+    sql: `SELECT
+  e.name,
+  e.department,
+  ROUND(SUM(s.revenue), 2)  AS employee_revenue,
+  ROUND(
+    (SELECT AVG(total) FROM
+      (SELECT SUM(revenue) AS total FROM sales GROUP BY emp_id)
+    ), 2)                    AS company_avg_revenue,
+  ROUND(SUM(s.revenue) -
+    (SELECT AVG(total) FROM
+      (SELECT SUM(revenue) AS total FROM sales GROUP BY emp_id)
+    ), 2)                    AS variance_from_avg
+FROM employees e
+JOIN sales s ON e.emp_id = s.emp_id
+GROUP BY e.emp_id, e.name, e.department
+HAVING SUM(s.revenue) >
+  (SELECT AVG(total) FROM
+    (SELECT SUM(revenue) AS total FROM sales GROUP BY emp_id)
+  )
+ORDER BY employee_revenue DESC;`,
+    insight: "Subqueries inside HAVING clauses allow you to filter groups against dynamic thresholds — a more powerful pattern than filtering on a fixed number."
+  },
+  tenure_analysis: {
+    sql: `SELECT
+  department,
+  COUNT(*)                                     AS total_employees,
+  SUM(CASE WHEN status = 'Active' THEN 1 ELSE 0 END)   AS active,
+  SUM(CASE WHEN status = 'Terminated' THEN 1 ELSE 0 END) AS terminated,
+  ROUND(
+    SUM(CASE WHEN status = 'Terminated' THEN 1 ELSE 0 END) * 100.0 / COUNT(*),
+    1)                                          AS attrition_rate_pct,
+  ROUND(AVG(
+    CAST(strftime('%Y', 'now') AS INTEGER) -
+    CAST(substr(hire_date, 1, 4) AS INTEGER)
+  ), 1)                                         AS avg_tenure_years
+FROM employees
+GROUP BY department
+HAVING COUNT(*) > 3
+ORDER BY attrition_rate_pct DESC;`,
+    insight: "HAVING filters aggregate results (unlike WHERE which filters rows). Combined with date math and CASE WHEN, this surfaces attrition and retention patterns — critical for HR and workforce analytics."
+  },
+  yoy_growth: {
+    sql: `WITH yearly AS (
+  SELECT
+    strftime('%Y', sale_date) AS yr,
+    ROUND(SUM(revenue), 2)    AS total_revenue
+  FROM sales
+  GROUP BY yr
+),
+growth AS (
+  SELECT
+    yr,
+    total_revenue,
+    LAG(total_revenue) OVER (ORDER BY yr) AS prev_year_revenue
+  FROM yearly
+)
+SELECT
+  yr                   AS year,
+  total_revenue,
+  prev_year_revenue,
+  ROUND(
+    (total_revenue - prev_year_revenue) / prev_year_revenue * 100,
+    1)                 AS yoy_growth_pct
+FROM growth
+ORDER BY yr;`,
+    insight: "CTEs (WITH clauses) make complex queries readable by breaking them into named steps. LAG() is a window function that accesses the previous row's value — ideal for period-over-period comparisons."
+  }
+};
+
+// ─── DATASET GENERATION ───────────────────────────────────────────
+function generateData() {
+  const depts = ['Sales', 'Operations', 'Marketing', 'Finance', 'Customer Success'];
+  const regions = ['Northeast', 'Southeast', 'Midwest', 'West'];
+  const statuses = ['Active', 'Active', 'Active', 'Active', 'Terminated'];
+  const names = [
+    'Marcus Webb','Priya Anand','Jordan Lee','Fatima Osei','Daniel Cruz',
+    'Aisha Rahman','Tyler Brooks','Mei Lin','Samuel Torres','Keisha Brown',
+    'Liam O\'Brien','Yasmin Patel','Devon Harris','Elena Vasquez','Chris Kim',
+    'Nadia Fowler','Raj Mehta','Simone Grant','Alex Nguyen','Brianna Scott',
+    'Omar Khalil','Tasha Williams','Connor Walsh','Amara Diallo','Felix Roth',
+    'Ingrid Hansen','Jerome Davis','Camille Blanc','Ravi Sharma','Destiny Moore',
+    'Patrick Okonkwo','Lena Bauer','Jaylen Foster','Sofia Russo','Ben Tanaka',
+    'Aaliyah James','Hugo Fernandez','Chloe Park','Kwame Asante','Isabel Mora'
+  ];
+  const products = [
+    {name:'Enterprise Suite', cat:'Software', price:1299, cost:320},
+    {name:'Analytics Pro', cat:'Software', price:899, cost:210},
+    {name:'CRM Starter', cat:'Software', price:499, cost:120},
+    {name:'Data Bridge', cat:'Integration', price:749, cost:180},
+    {name:'Cloud Storage 1TB', cat:'Infrastructure', price:199, cost:60},
+    {name:'Security Shield', cat:'Security', price:649, cost:150},
+    {name:'Mobile SDK', cat:'Developer Tools', price:349, cost:80},
+    {name:'API Gateway', cat:'Infrastructure', price:449, cost:110},
+    {name:'Report Builder', cat:'Software', price:299, cost:70},
+    {name:'Compliance Pack', cat:'Security', price:799, cost:190},
+    {name:'Training Bundle', cat:'Services', price:599, cost:140},
+    {name:'Support Pro', cat:'Services', price:399, cost:90},
+    {name:'IoT Connector', cat:'Integration', price:549, cost:130},
+    {name:'Backup Suite', cat:'Infrastructure', price:249, cost:55},
+    {name:'Identity Manager', cat:'Security', price:699, cost:165}
+  ];
+
+  const employees = names.map((name, i) => ({
+    emp_id: i + 1,
+    name,
+    department: depts[i % depts.length],
+    region: regions[i % regions.length],
+    hire_date: `${2018 + (i % 6)}-${String((i % 12) + 1).padStart(2,'0')}-${String((i % 28) + 1).padStart(2,'0')}`,
+    salary: Math.round((45000 + Math.random() * 75000) / 1000) * 1000,
+    status: statuses[i % statuses.length]
+  }));
+
+  const prodRows = products.map((p, i) => ({
+    product_id: i + 1,
+    product_name: p.name,
+    category: p.cat,
+    unit_price: p.price,
+    cost: p.cost
+  }));
+
+  const sales = [];
+  for (let i = 1; i <= 600; i++) {
+    const emp = employees[Math.floor(Math.random() * employees.length)];
+    const prod = prodRows[Math.floor(Math.random() * prodRows.length)];
+    const year = 2021 + Math.floor(Math.random() * 4);
+    const month = String(Math.floor(Math.random() * 12) + 1).padStart(2,'0');
+    const day = String(Math.floor(Math.random() * 28) + 1).padStart(2,'0');
+    const qty = Math.floor(Math.random() * 5) + 1;
+    sales.push({
+      sale_id: i,
+      emp_id: emp.emp_id,
+      product_id: prod.product_id,
+      sale_date: `${year}-${month}-${day}`,
+      quantity: qty,
+      revenue: Math.round(prod.unit_price * qty * (0.85 + Math.random() * 0.3) * 100) / 100,
+      region: emp.region
+    });
+  }
+
+  const ratings = ['Exceptional', 'Exceeds Expectations', 'Meets Expectations', 'Needs Improvement'];
+  const performance = [];
+  let rid = 1;
+  employees.forEach(e => {
+    for (let y = 2021; y <= 2024; y++) {
+      const score = Math.round((2.5 + Math.random() * 2.5) * 10) / 10;
+      performance.push({
+        review_id: rid++,
+        emp_id: e.emp_id,
+        review_year: y,
+        score,
+        rating: score >= 4.5 ? ratings[0] : score >= 3.5 ? ratings[1] : score >= 2.5 ? ratings[2] : ratings[3]
+      });
+    }
+  });
+
+  return { employees, products: prodRows, sales, performance };
+}
+
+// ─── DATABASE INIT ────────────────────────────────────────────────
+let db;
+
+async function initDB() {
+  const SQL = await initSqlJs({
+    locateFile: file => `https://cdnjs.cloudflare.com/ajax/libs/sql.js/1.10.2/${file}`
+  });
+  db = new SQL.Database();
+
+  db.run(`CREATE TABLE employees (
+    emp_id INTEGER PRIMARY KEY, name TEXT, department TEXT,
+    region TEXT, hire_date TEXT, salary REAL, status TEXT
+  );`);
+  db.run(`CREATE TABLE products (
+    product_id INTEGER PRIMARY KEY, product_name TEXT, category TEXT,
+    unit_price REAL, cost REAL
+  );`);
+  db.run(`CREATE TABLE sales (
+    sale_id INTEGER PRIMARY KEY, emp_id INTEGER, product_id INTEGER,
+    sale_date TEXT, quantity INTEGER, revenue REAL, region TEXT
+  );`);
+  db.run(`CREATE TABLE performance (
+    review_id INTEGER PRIMARY KEY, emp_id INTEGER,
+    review_year INTEGER, score REAL, rating TEXT
+  );`);
+
+  const { employees, products, sales, performance } = generateData();
+
+  const empStmt = db.prepare(`INSERT INTO employees VALUES (?,?,?,?,?,?,?)`);
+  employees.forEach(e => empStmt.run([e.emp_id, e.name, e.department, e.region, e.hire_date, e.salary, e.status]));
+  empStmt.free();
+
+  const prodStmt = db.prepare(`INSERT INTO products VALUES (?,?,?,?,?)`);
+  products.forEach(p => prodStmt.run([p.product_id, p.product_name, p.category, p.unit_price, p.cost]));
+  prodStmt.free();
+
+  const saleStmt = db.prepare(`INSERT INTO sales VALUES (?,?,?,?,?,?,?)`);
+  sales.forEach(s => saleStmt.run([s.sale_id, s.emp_id, s.product_id, s.sale_date, s.quantity, s.revenue, s.region]));
+  saleStmt.free();
+
+  const perfStmt = db.prepare(`INSERT INTO performance VALUES (?,?,?,?,?)`);
+  performance.forEach(p => perfStmt.run([p.review_id, p.emp_id, p.review_year, p.score, p.rating]));
+  perfStmt.free();
+
+  document.getElementById('loading').style.opacity = '0';
+  setTimeout(() => document.getElementById('loading').style.display = 'none', 400);
+
+  loadQuery('revenue_by_dept');
+}
+
+// ─── QUERY FUNCTIONS ──────────────────────────────────────────────
+let activeQuery = 'revenue_by_dept';
+
+function loadQuery(key) {
+  if (activeQuery) {
+    document.getElementById('btn-' + activeQuery)?.classList.remove('active');
+  }
+  activeQuery = key;
+  document.getElementById('btn-' + key)?.classList.add('active');
+  document.getElementById('sql-editor').value = QUERIES[key].sql;
+  runQuery(key);
+}
+
+function clearEditor() {
+  document.getElementById('sql-editor').value = '';
+  document.getElementById('results-container').innerHTML = `<div class="empty-state"><span class="empty-icon">⌗</span>Write a query above and click <strong>Run Query</strong>.</div>`;
+  document.getElementById('results-meta').textContent = '';
+  document.getElementById('insight-box').style.display = 'none';
+  if (activeQuery) {
+    document.getElementById('btn-' + activeQuery)?.classList.remove('active');
+    activeQuery = null;
+  }
+}
+
+function runQuery(queryKey) {
+  if (!db) return;
+  const sql = document.getElementById('sql-editor').value.trim();
+  if (!sql) return;
+
+  const container = document.getElementById('results-container');
+  const meta = document.getElementById('results-meta');
+  const insight = document.getElementById('insight-box');
+  const insightText = document.getElementById('insight-text');
+
+  try {
+    const t0 = performance.now();
+    const results = db.exec(sql);
+    const elapsed = (performance.now() - t0).toFixed(1);
+
+    if (!results.length) {
+      container.innerHTML = `<div class="empty-state"><span class="empty-icon">✓</span>Query executed successfully. No rows returned.</div>`;
+      meta.textContent = `0 rows · ${elapsed}ms`;
+      meta.className = 'results-meta';
+      insight.style.display = 'none';
+      return;
+    }
+
+    const { columns, values } = results[0];
+    const rowCount = values.length;
+
+    meta.textContent = `${rowCount} row${rowCount !== 1 ? 's' : ''} · ${elapsed}ms`;
+    meta.className = 'results-meta';
+
+    let html = `<div class="table-wrap"><table><thead><tr>`;
+    columns.forEach(col => { html += `<th>${col}</th>`; });
+    html += `</tr></thead><tbody>`;
+    values.forEach(row => {
+      html += `<tr>`;
+      row.forEach(val => {
+        const display = val === null ? '<em style="color:#aaa">NULL</em>' : val;
+        html += `<td>${display}</td>`;
+      });
+      html += `</tr>`;
+    });
+    html += `</tbody></table></div>`;
+    container.innerHTML = html;
+
+    const key = queryKey || activeQuery;
+    if (key && QUERIES[key]?.insight) {
+      insightText.textContent = QUERIES[key].insight;
+      insight.style.display = 'block';
+    } else {
+      insight.style.display = 'none';
+    }
+
+  } catch (err) {
+    container.innerHTML = `<div class="error-box">⚠ ${err.message}</div>`;
+    meta.textContent = 'Error';
+    meta.className = 'results-meta error';
+    insight.style.display = 'none';
+  }
+}
+
+// Ctrl+Enter to run
+document.addEventListener('keydown', e => {
+  if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') { e.preventDefault(); runQuery(); }
+});
+
+initDB();
+</script>
+</body>
+</html>
