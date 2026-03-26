@@ -593,8 +593,585 @@ footer {
   to { opacity: 1; transform: translateY(0); }
 }
 
-/* ─── RESPONSIVE ─── */
+/* ─── HERO ACTIONS ─── */
+.hero-actions {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-top: 2rem;
+  flex-wrap: wrap;
+}
+
+.resume-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: var(--ink);
+  color: var(--paper);
+  font-family: 'DM Mono', monospace;
+  font-size: 0.72rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  text-decoration: none;
+  padding: 0.65rem 1.25rem;
+  border-radius: 2px;
+  transition: background 0.2s, transform 0.15s;
+}
+
+.resume-btn:hover {
+  background: var(--accent);
+  transform: translateY(-1px);
+}
+
+.contact-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-family: 'DM Mono', monospace;
+  font-size: 0.7rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--green, #2d8050);
+  text-decoration: none;
+  border: 1px solid rgba(45,128,80,0.3);
+  padding: 0.6rem 1.1rem;
+  border-radius: 2px;
+  transition: border-color 0.2s, color 0.2s;
+}
+
+.contact-pill::before {
+  content: '';
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #2d8050;
+  animation: pulse-dot 2s ease-in-out infinite;
+  flex-shrink: 0;
+}
+
+@keyframes pulse-dot {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.5; transform: scale(0.7); }
+}
+
+.contact-pill:hover { color: #2d8050; border-color: #2d8050; }
+
+/* ─── SKILLS SECTION ─── */
+.skills-section {
+  border-top: 1px solid var(--rule);
+  background: var(--card-bg);
+}
+
+.skills-inner {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 5rem 3rem;
+}
+
+.skills-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+  gap: 1px;
+  background: var(--rule);
+  border: 1px solid var(--rule);
+  margin-top: 2.5rem;
+}
+
+.skill-cell {
+  background: var(--card-bg);
+  padding: 1.5rem 1.25rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+  transition: background 0.15s;
+}
+
+.skill-cell:hover { background: #fafaf7; }
+
+.skill-icon {
+  font-size: 1.25rem;
+  line-height: 1;
+}
+
+.skill-name {
+  font-family: 'DM Sans', sans-serif;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--ink);
+}
+
+.skill-type {
+  font-family: 'DM Mono', monospace;
+  font-size: 0.6rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.skill-bar-track {
+  height: 3px;
+  background: var(--rule);
+  border-radius: 2px;
+  margin-top: 0.25rem;
+  overflow: hidden;
+}
+
+.skill-bar-fill {
+  height: 100%;
+  border-radius: 2px;
+  background: var(--accent);
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 0.8s cubic-bezier(0.16,1,0.3,1);
+}
+
+.skill-bar-fill.blue { background: var(--accent2); }
+.skill-bar-fill.green { background: #2d8050; }
+.skill-bar-fill.gold { background: var(--gold); }
+
+.skills-grid.animated .skill-bar-fill { transform: scaleX(1); }
+
+.skills-categories {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1.5rem;
+  margin-top: 2rem;
+}
+
+.skills-cat-label {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-family: 'DM Mono', monospace;
+  font-size: 0.65rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.cat-dot {
+  width: 8px; height: 8px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+/* ─── RESEARCH SECTION ─── */
+.research-section {
+  border-top: 1px solid var(--rule);
+  background: var(--paper);
+}
+
+.research-inner {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 5rem 3rem;
+}
+
+.research-card {
+  margin-top: 2.5rem;
+  border: 1px solid var(--rule);
+  background: var(--card-bg);
+  display: grid;
+  grid-template-columns: 3fr 1fr;
+  overflow: hidden;
+}
+
+.research-body { padding: 2.5rem 3rem; }
+
+.research-badge {
+  display: inline-block;
+  font-family: 'DM Mono', monospace;
+  font-size: 0.62rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  background: rgba(42,92,143,0.1);
+  color: var(--accent2);
+  border: 1px solid rgba(42,92,143,0.2);
+  padding: 0.25rem 0.65rem;
+  border-radius: 2px;
+  margin-bottom: 1.25rem;
+}
+
+.research-title {
+  font-family: 'DM Serif Display', serif;
+  font-size: 1.5rem;
+  line-height: 1.25;
+  font-weight: 400;
+  color: var(--ink);
+  margin-bottom: 0.75rem;
+}
+
+.research-citation {
+  font-family: 'DM Mono', monospace;
+  font-size: 0.72rem;
+  color: var(--muted);
+  line-height: 1.6;
+  margin-bottom: 1.5rem;
+  border-left: 2px solid var(--rule);
+  padding-left: 1rem;
+}
+
+.research-summary {
+  font-size: 0.9rem;
+  color: var(--ink);
+  line-height: 1.75;
+  font-weight: 300;
+  margin-bottom: 1.5rem;
+}
+
+.research-findings {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+}
+
+.finding-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.6rem;
+  font-size: 0.85rem;
+  color: var(--ink);
+  font-weight: 300;
+  line-height: 1.5;
+}
+
+.finding-bullet {
+  flex-shrink: 0;
+  width: 18px;
+  height: 18px;
+  background: rgba(42,92,143,0.1);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.55rem;
+  color: var(--accent2);
+  font-weight: 700;
+  margin-top: 0.1rem;
+}
+
+.research-side {
+  border-left: 1px solid var(--rule);
+  background: #f5f8ff;
+  padding: 2.5rem 2rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.research-stat {
+  text-align: center;
+}
+
+.research-stat-num {
+  font-family: 'DM Serif Display', serif;
+  font-size: 2.2rem;
+  color: var(--accent2);
+  line-height: 1;
+  display: block;
+  margin-bottom: 0.25rem;
+}
+
+.research-stat-label {
+  font-family: 'DM Mono', monospace;
+  font-size: 0.6rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--muted);
+  line-height: 1.4;
+}
+
+.research-divider {
+  height: 1px;
+  background: var(--rule);
+}
+
+/* ─── MALI CASE STUDY CALLOUT ─── */
+.mali-callout {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 3rem 5rem;
+}
+
+.mali-callout-inner {
+  border: 1px solid rgba(201,151,42,0.3);
+  background: #fefcf5;
+  display: grid;
+  grid-template-columns: 1fr 2fr;
+  overflow: hidden;
+}
+
+.mali-label-col {
+  background: #0a0a08;
+  padding: 2.5rem 2rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.mali-label-top {
+  font-family: 'DM Mono', monospace;
+  font-size: 0.6rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: rgba(201,151,42,0.7);
+}
+
+.mali-label-title {
+  font-family: 'DM Serif Display', serif;
+  font-size: 1.5rem;
+  color: #e8e0cc;
+  line-height: 1.2;
+  margin-top: 1rem;
+}
+
+.mali-label-sub {
+  font-family: 'DM Mono', monospace;
+  font-size: 0.65rem;
+  color: rgba(232,224,204,0.4);
+  margin-top: auto;
+  padding-top: 2rem;
+}
+
+.mali-body-col {
+  padding: 2.5rem 3rem;
+}
+
+.mali-method-steps {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+  margin-top: 0.5rem;
+}
+
+.mali-step {
+  display: grid;
+  grid-template-columns: 36px 1fr;
+  gap: 1rem;
+  align-items: start;
+}
+
+.mali-step-num {
+  font-family: 'DM Mono', monospace;
+  font-size: 0.65rem;
+  color: var(--muted);
+  padding-top: 0.15rem;
+}
+
+.mali-step-content {}
+
+.mali-step-title {
+  font-size: 0.88rem;
+  font-weight: 600;
+  color: var(--ink);
+  margin-bottom: 0.2rem;
+}
+
+.mali-step-desc {
+  font-size: 0.82rem;
+  color: var(--muted);
+  font-weight: 300;
+  line-height: 1.55;
+}
+
+.mali-findings {
+  margin-top: 1.5rem;
+  border-top: 1px solid var(--rule);
+  padding-top: 1.5rem;
+}
+
+.mali-findings-label {
+  font-family: 'DM Mono', monospace;
+  font-size: 0.62rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin-bottom: 0.75rem;
+}
+
+.mali-findings-text {
+  font-size: 0.88rem;
+  color: var(--ink);
+  line-height: 1.7;
+  font-weight: 300;
+}
+
+.mali-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  margin-top: 1rem;
+  font-family: 'DM Mono', monospace;
+  font-size: 0.68rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--accent);
+  text-decoration: none;
+  border-bottom: 1px solid transparent;
+  transition: border-color 0.2s;
+}
+
+.mali-link:hover { border-color: var(--accent); }
+
+/* ─── CONTACT SECTION ─── */
+.contact-section {
+  border-top: 1px solid var(--rule);
+  background: var(--ink);
+}
+
+.contact-inner {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 5rem 3rem;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 5rem;
+  align-items: center;
+}
+
+.contact-left {}
+
+.contact-eyebrow {
+  font-family: 'DM Mono', monospace;
+  font-size: 0.68rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: rgba(245,242,236,0.4);
+  margin-bottom: 1.25rem;
+}
+
+.contact-heading {
+  font-family: 'DM Serif Display', serif;
+  font-size: clamp(1.8rem, 3vw, 2.8rem);
+  color: var(--paper);
+  line-height: 1.15;
+  font-weight: 400;
+  margin-bottom: 1.25rem;
+}
+
+.contact-heading em {
+  font-style: italic;
+  color: var(--accent);
+}
+
+.contact-status {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  font-family: 'DM Mono', monospace;
+  font-size: 0.72rem;
+  letter-spacing: 0.08em;
+  color: #3fb950;
+  margin-bottom: 1.5rem;
+}
+
+.contact-status-dot {
+  width: 7px; height: 7px;
+  border-radius: 50%;
+  background: #3fb950;
+  animation: pulse-dot 2s ease-in-out infinite;
+  flex-shrink: 0;
+}
+
+.contact-detail {
+  font-size: 0.9rem;
+  color: rgba(245,242,236,0.55);
+  font-weight: 300;
+  line-height: 1.7;
+}
+
+.contact-right {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.contact-link-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1.1rem 1.25rem;
+  border: 1px solid rgba(245,242,236,0.1);
+  text-decoration: none;
+  color: var(--paper);
+  transition: border-color 0.2s, background 0.2s;
+}
+
+.contact-link-row:hover {
+  border-color: rgba(245,242,236,0.3);
+  background: rgba(245,242,236,0.03);
+}
+
+.contact-link-label {
+  font-family: 'DM Mono', monospace;
+  font-size: 0.68rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: rgba(245,242,236,0.4);
+  margin-bottom: 0.2rem;
+}
+
+.contact-link-value {
+  font-size: 0.9rem;
+  font-weight: 400;
+  color: var(--paper);
+}
+
+.contact-link-arrow {
+  color: rgba(245,242,236,0.3);
+  transition: color 0.2s, transform 0.2s;
+}
+
+.contact-link-row:hover .contact-link-arrow {
+  color: var(--accent);
+  transform: translateX(3px);
+}
+
+.contact-open-roles {
+  margin-top: 0.5rem;
+  padding: 1.25rem;
+  border: 1px solid rgba(200,68,10,0.3);
+  background: rgba(200,68,10,0.05);
+}
+
+.contact-roles-label {
+  font-family: 'DM Mono', monospace;
+  font-size: 0.62rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--accent);
+  margin-bottom: 0.75rem;
+}
+
+.contact-roles-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.role-chip {
+  font-family: 'DM Mono', monospace;
+  font-size: 0.65rem;
+  letter-spacing: 0.06em;
+  color: rgba(245,242,236,0.7);
+  border: 1px solid rgba(245,242,236,0.15);
+  padding: 0.3rem 0.65rem;
+  border-radius: 2px;
+}
+
+/* ─── RESPONSIVE ADDITIONS ─── */
 @media (max-width: 768px) {
+  .research-card { grid-template-columns: 1fr; }
+  .research-side { border-left: none; border-top: 1px solid var(--rule); flex-direction: row; justify-content: space-around; }
+  .mali-callout-inner { grid-template-columns: 1fr; }
+  .mali-label-col { padding: 2rem; }
+  .contact-inner { grid-template-columns: 1fr; gap: 3rem; }
+  .skills-grid { grid-template-columns: repeat(auto-fill, minmax(130px, 1fr)); }
+  .mali-callout { padding: 0 1.5rem 3rem; }
+  .skills-inner, .research-inner { padding: 3rem 1.5rem; }
+}
+
+
   nav { padding: 1rem 1.5rem; }
   .nav-links { display: none; }
   .hero { padding: 100px 1.5rem 3rem; }
@@ -614,7 +1191,9 @@ footer {
   <div class="nav-brand">Safiatou Coulibaly &nbsp;/&nbsp; Data Analytics</div>
   <ul class="nav-links">
     <li><a href="#projects">Projects</a></li>
-    <li><a href="#about">About</a></li>
+    <li><a href="#skills">Skills</a></li>
+    <li><a href="#research">Research</a></li>
+    <li><a href="#contact">Contact</a></li>
     <li><a href="https://www.linkedin.com/in/safiatoucoulibaly1" target="_blank">LinkedIn</a></li>
   </ul>
 </nav>
@@ -636,6 +1215,13 @@ footer {
     <span class="hero-tag">Data Cleaning</span>
     <span class="hero-tag">ETL</span>
     <span class="hero-tag">Tableau</span>
+  </div>
+  <div class="hero-actions fade-up d5">
+    <a class="resume-btn" href="Safiatou_Coulibaly_Resume.pdf" download>
+      <svg width="14" height="14" viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M7 1v8M7 9l-3-3M7 9l3-3M2 12h10" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      Download Resume
+    </a>
+    <a class="contact-pill" href="#contact">Open to Opportunities</a>
   </div>
 </div>
 
@@ -823,30 +1409,314 @@ footer {
 
 </section>
 
+<!-- SKILLS & TOOLS -->
+<section class="skills-section" id="skills">
+  <div class="skills-inner">
+    <div class="section-label fade-up d1">Skills &amp; Tools</div>
+    <div class="skills-categories">
+      <span class="skills-cat-label"><span class="cat-dot" style="background:#c8440a"></span>Languages &amp; Query</span>
+      <span class="skills-cat-label"><span class="cat-dot" style="background:#2a5c8f"></span>Analytics &amp; BI</span>
+      <span class="skills-cat-label"><span class="cat-dot" style="background:#2d8050"></span>Data Engineering</span>
+      <span class="skills-cat-label"><span class="cat-dot" style="background:#c9972a"></span>Operations &amp; Systems</span>
+    </div>
+    <div class="skills-grid" id="skills-grid">
+
+      <div class="skill-cell">
+        <span class="skill-icon">🐍</span>
+        <div class="skill-name">Python</div>
+        <div class="skill-type">Language</div>
+        <div class="skill-bar-track"><div class="skill-bar-fill" style="width:88%"></div></div>
+      </div>
+
+      <div class="skill-cell">
+        <span class="skill-icon">🗄️</span>
+        <div class="skill-name">SQL</div>
+        <div class="skill-type">Query Language</div>
+        <div class="skill-bar-track"><div class="skill-bar-fill" style="width:85%"></div></div>
+      </div>
+
+      <div class="skill-cell">
+        <span class="skill-icon">📊</span>
+        <div class="skill-name">Excel</div>
+        <div class="skill-type">Analytics</div>
+        <div class="skill-bar-track"><div class="skill-bar-fill blue" style="width:95%"></div></div>
+      </div>
+
+      <div class="skill-cell">
+        <span class="skill-icon">📈</span>
+        <div class="skill-name">Power BI</div>
+        <div class="skill-type">Business Intelligence</div>
+        <div class="skill-bar-track"><div class="skill-bar-fill blue" style="width:78%"></div></div>
+      </div>
+
+      <div class="skill-cell">
+        <span class="skill-icon">📉</span>
+        <div class="skill-name">Tableau</div>
+        <div class="skill-type">Data Visualization</div>
+        <div class="skill-bar-track"><div class="skill-bar-fill blue" style="width:72%"></div></div>
+      </div>
+
+      <div class="skill-cell">
+        <span class="skill-icon">🐼</span>
+        <div class="skill-name">Pandas</div>
+        <div class="skill-type">Data Engineering</div>
+        <div class="skill-bar-track"><div class="skill-bar-fill green" style="width:87%"></div></div>
+      </div>
+
+      <div class="skill-cell">
+        <span class="skill-icon">🔢</span>
+        <div class="skill-name">NumPy</div>
+        <div class="skill-type">Data Engineering</div>
+        <div class="skill-bar-track"><div class="skill-bar-fill green" style="width:75%"></div></div>
+      </div>
+
+      <div class="skill-cell">
+        <span class="skill-icon">📦</span>
+        <div class="skill-name">ETL Pipelines</div>
+        <div class="skill-type">Data Engineering</div>
+        <div class="skill-bar-track"><div class="skill-bar-fill green" style="width:82%"></div></div>
+      </div>
+
+      <div class="skill-cell">
+        <span class="skill-icon">☁️</span>
+        <div class="skill-name">Dynamics 365</div>
+        <div class="skill-type">Operations</div>
+        <div class="skill-bar-track"><div class="skill-bar-fill gold" style="width:90%"></div></div>
+      </div>
+
+      <div class="skill-cell">
+        <span class="skill-icon">🔤</span>
+        <div class="skill-name">R</div>
+        <div class="skill-type">Language</div>
+        <div class="skill-bar-track"><div class="skill-bar-fill" style="width:60%"></div></div>
+      </div>
+
+      <div class="skill-cell">
+        <span class="skill-icon">🗃️</span>
+        <div class="skill-name">Data Cleaning</div>
+        <div class="skill-type">Data Engineering</div>
+        <div class="skill-bar-track"><div class="skill-bar-fill green" style="width:92%"></div></div>
+      </div>
+
+      <div class="skill-cell">
+        <span class="skill-icon">🧭</span>
+        <div class="skill-name">OSINT Research</div>
+        <div class="skill-type">Analysis</div>
+        <div class="skill-bar-track"><div class="skill-bar-fill gold" style="width:80%"></div></div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- RESEARCH & PUBLICATIONS -->
+<section class="research-section" id="research">
+  <div class="research-inner">
+    <div class="section-label fade-up d1">Research &amp; Publications</div>
+
+    <div class="research-card fade-up d2">
+      <div class="research-body">
+        <span class="research-badge">Peer-Reviewed Conference Presentation · LAK'25</span>
+        <h2 class="research-title">Bumpy Journey: Using Learning Analytics to Understand Undergraduate CS Gateway Course Performance and Major Switch Decisions</h2>
+        <p class="research-citation">
+          Chen, L.K., Ngo, S., Coulibaly, S., Talwar, A., Vyas, N., &amp; Konkobo, K. (2025). Companion Proceedings of the 15th International Conference on Learning Analytics &amp; Knowledge (LAK'25). March 2025.
+        </p>
+        <p class="research-summary">
+          This study used learning analytics to examine why students leave Computer Science majors at a minority-serving institution. The team built predictive models to forecast whether students would pass CS gateway courses, and analyzed whether major switches were "forced" (due to failing required courses) or "voluntary" (chosen despite not failing). The goal was to inform more equitable advising and curriculum design for underrepresented students in computing.
+        </p>
+        <div class="research-findings">
+          <div class="finding-row">
+            <span class="finding-bullet">1</span>
+            A logistic regression model using first-term GPA and math course grades achieved an AUC of 0.93, correctly identifying 90% of students who would eventually pass gateway courses.
+          </div>
+          <div class="finding-row">
+            <span class="finding-bullet">2</span>
+            Of 693 students who switched majors, only 28.4% were "forced" out by failing gateway courses. The majority left voluntarily, pointing to belonging and fit as larger drivers than academic failure alone.
+          </div>
+          <div class="finding-row">
+            <span class="finding-bullet">3</span>
+            Female students were more likely to voluntarily leave CS (79%) compared to male students (69%), a pattern consistent across all race groups in the cohort.
+          </div>
+          <div class="finding-row">
+            <span class="finding-bullet">4</span>
+            Students from lower-income backgrounds were more likely to voluntarily leave the CS major, potentially because they lacked the financial flexibility to retake courses and absorb the added time and cost.
+          </div>
+        </div>
+      </div>
+      <div class="research-side">
+        <div class="research-stat">
+          <span class="research-stat-num">LAK'25</span>
+          <span class="research-stat-label">International Conference on Learning Analytics &amp; Knowledge</span>
+        </div>
+        <div class="research-divider"></div>
+        <div class="research-stat">
+          <span class="research-stat-num">756</span>
+          <span class="research-stat-label">Students in predictive model cohort</span>
+        </div>
+        <div class="research-divider"></div>
+        <div class="research-stat">
+          <span class="research-stat-num">0.93</span>
+          <span class="research-stat-label">AUC score on best predictive model</span>
+        </div>
+        <div class="research-divider"></div>
+        <div class="research-stat">
+          <span class="research-stat-num">UMBC</span>
+          <span class="research-stat-label">Minority-Serving Institution, East Coast</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- MALI CASE STUDY METHODOLOGY -->
+<div class="mali-callout">
+  <div class="mali-callout-inner fade-up d2">
+    <div class="mali-label-col">
+      <div>
+        <div class="mali-label-top">// Project 03 Methodology</div>
+        <div class="mali-label-title">Mali Gold Due Diligence</div>
+      </div>
+      <div class="mali-label-sub">Risk Assessment Framework</div>
+    </div>
+    <div class="mali-body-col">
+      <div class="mali-method-steps">
+        <div class="mali-step">
+          <div class="mali-step-num">01</div>
+          <div class="mali-step-content">
+            <div class="mali-step-title">Scoping the Questions</div>
+            <div class="mali-step-desc">The central question: what sovereign, sanctions, and reputational risks would a U.S. entity face by engaging with actors in Mali's gold supply chain? Secondary questions included which specific companies and officials carry designations, and what historical arbitration disputes reveal about contractual risk.</div>
+          </div>
+        </div>
+        <div class="mali-step">
+          <div class="mali-step-num">02</div>
+          <div class="mali-step-content">
+            <div class="mali-step-title">Data Sources</div>
+            <div class="mali-step-desc">18 primary sources, including U.S. Treasury OFAC designation records, ICSID international arbitration filings, investigative journalism from Reuters and Le Monde, and State Department country risk reports. All sources linked and cited directly in the final deliverable.</div>
+          </div>
+        </div>
+        <div class="mali-step">
+          <div class="mali-step-num">03</div>
+          <div class="mali-step-content">
+            <div class="mali-step-title">Risk Classification</div>
+            <div class="mali-step-desc">Each risk category (sovereign, sanctions, reputational, operational) was scored across a three-tier matrix: Critical, High, and Moderate. Ratings were anchored to specific evidence, not judgment alone.</div>
+          </div>
+        </div>
+        <div class="mali-step">
+          <div class="mali-step-num">04</div>
+          <div class="mali-step-content">
+            <div class="mali-step-title">Output</div>
+            <div class="mali-step-desc">A structured due diligence brief designed to support a compliance or investment team making a go/no-go decision. Formatted to mirror industry-standard third-party risk reports used in federal contracting and international finance.</div>
+          </div>
+        </div>
+      </div>
+      <div class="mali-findings">
+        <div class="mali-findings-label">Key Finding</div>
+        <div class="mali-findings-text">
+          Sovereign and sanctions risk were rated Critical, driven by active OFAC designations against key figures in the Malian gold sector and the military government's ongoing nationalization of mining contracts. The assessment recommends a full compliance review before any direct or indirect engagement.
+        </div>
+        <a class="mali-link" href="mali_due_diligence.html">View Full Assessment →</a>
+      </div>
+    </div>
+  </div>
+</div>
+
 <!-- ABOUT -->
 <div class="about-strip" id="about">
   <div class="about-inner">
     <div class="about-label">About</div>
     <div>
       <p class="about-text">
-        UMBC graduate in Information Systems with hands-on experience in Python, SQL, Power BI, and Excel.
-        Background spans federal research (McNair Scholar, UMBC Narrative Co-Lab), operations management
-        (Sofi Hair Braiding), and university administration (Resident Advisor, Orientation Ambassador).
-        Currently seeking full-time roles in data analysis, operations research, and business analysis
-        in the Baltimore / Washington, DC area.
+        UMBC graduate in Information Systems (B.S., Cum Laude, GPA 3.56) with hands-on experience in Python, SQL, Power BI, and Excel.
+        Background spans federal consulting (Gray Decision Intelligence), academic research with peer-reviewed publication at LAK'25,
+        and seven years of operations management. Currently seeking full-time roles in data analytics, business analysis, and federal positions
+        in the Baltimore and Washington DC area.
       </p>
       <div class="about-links">
         <a class="about-link" href="https://www.linkedin.com/in/safiatoucoulibaly1" target="_blank">LinkedIn ↗</a>
         <a class="about-link" href="https://github.com/safiatou2coulibaly-sys" target="_blank">GitHub ↗</a>
+        <a class="about-link" href="Safiatou_Coulibaly_Resume.pdf" download>Resume PDF ↓</a>
       </div>
     </div>
   </div>
 </div>
 
+<!-- CONTACT -->
+<section class="contact-section" id="contact">
+  <div class="contact-inner">
+    <div class="contact-left">
+      <div class="contact-eyebrow">// Availability</div>
+      <h2 class="contact-heading">Currently open to <em>full-time</em> opportunities</h2>
+      <div class="contact-status">
+        <span class="contact-status-dot"></span>
+        Available now &nbsp;·&nbsp; Baltimore, MD &nbsp;·&nbsp; Open to remote
+      </div>
+      <p class="contact-detail">
+        Actively pursuing roles in data analytics, business analysis, research analysis, and federal or government positions.
+        Based in Baltimore with flexibility for hybrid and remote work. Authorized to work in the U.S.
+      </p>
+      <div class="contact-open-roles" style="margin-top:1.5rem">
+        <div class="contact-roles-label">Roles of Interest</div>
+        <div class="contact-roles-list">
+          <span class="role-chip">Data Analyst</span>
+          <span class="role-chip">Business Analyst</span>
+          <span class="role-chip">Research Analyst</span>
+          <span class="role-chip">Operations Analyst</span>
+          <span class="role-chip">Federal Analyst</span>
+          <span class="role-chip">Project Manager</span>
+        </div>
+      </div>
+    </div>
+    <div class="contact-right">
+      <a class="contact-link-row" href="mailto:safiatou2.coulibaly@gmail.com">
+        <div>
+          <div class="contact-link-label">Email</div>
+          <div class="contact-link-value">safiatou2.coulibaly@gmail.com</div>
+        </div>
+        <span class="contact-link-arrow">→</span>
+      </a>
+      <a class="contact-link-row" href="https://www.linkedin.com/in/safiatoucoulibaly1" target="_blank">
+        <div>
+          <div class="contact-link-label">LinkedIn</div>
+          <div class="contact-link-value">linkedin.com/in/safiatoucoulibaly1</div>
+        </div>
+        <span class="contact-link-arrow">→</span>
+      </a>
+      <a class="contact-link-row" href="tel:4435588387">
+        <div>
+          <div class="contact-link-label">Phone</div>
+          <div class="contact-link-value">443-558-8387</div>
+        </div>
+        <span class="contact-link-arrow">→</span>
+      </a>
+      <a class="contact-link-row" href="Safiatou_Coulibaly_Resume.pdf" download>
+        <div>
+          <div class="contact-link-label">Resume</div>
+          <div class="contact-link-value">Download PDF</div>
+        </div>
+        <span class="contact-link-arrow">↓</span>
+      </a>
+    </div>
+  </div>
+</section>
+
 <footer>
   <span class="footer-copy">© 2026 Safiatou Coulibaly</span>
   <span class="footer-copy">Data Analytics Portfolio</span>
 </footer>
+
+<script>
+// Animate skill bars when they scroll into view
+const grid = document.getElementById('skills-grid');
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      grid.classList.add('animated');
+      observer.unobserve(grid);
+    }
+  });
+}, { threshold: 0.2 });
+if (grid) observer.observe(grid);
+</script>
 
 </body>
 </html>
